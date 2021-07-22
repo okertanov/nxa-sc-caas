@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "ekbmiqoZpFL1+kNPgxb4BBgIjItWs9zyKS8Hll25jF6J5AuVB7IgIOtr3oH53+fTwCbfvyGlHvs4k2Q2L/I/tw==",
+  "success": true,
+  "projectFilePath": "/home/okertanov/projects/nxa-project/neo-frontier-launchpad-2021/nxa-sc-caas/src/nxa-sc-caas.csproj",
+  "expectedPackageFiles": [
+    "/home/okertanov/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "/home/okertanov/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/home/okertanov/.nuget/packages/swashbuckle.aspnetcore/5.6.3/swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "/home/okertanov/.nuget/packages/swashbuckle.aspnetcore.swagger/5.6.3/swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "/home/okertanov/.nuget/packages/swashbuckle.aspnetcore.swaggergen/5.6.3/swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "/home/okertanov/.nuget/packages/swashbuckle.aspnetcore.swaggerui/5.6.3/swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}
