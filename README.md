@@ -5,7 +5,6 @@ To build and launch
 -------------------
 
     make clean build
-    make test
     make start-dev
 
     make docker-clean docker-build
@@ -24,13 +23,14 @@ To deploy
 
 TODO
 ----
-[ ] Background task worker
 [ ] Persistence layer
-[ ] NEO Compiler to add & impl
-[ ] Dockerize it
 [ ] Bearer Auth
+[ ] Dockerize it
+[ ] NEO Compiler to test
+[ ] Background task worker
 [ ] WS or other RT notify transport
 
 
 Links
 -----
+[https://github.com/neo-project/neo-devpack-dotnet](https://github.com/neo-project/neo-devpack-dotnet)  
