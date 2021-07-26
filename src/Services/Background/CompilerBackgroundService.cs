@@ -1,0 +1,2 @@
+public class CompilerBackgroundService: ICompilerBackgroundService {
+}

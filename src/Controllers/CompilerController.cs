@@ -54,6 +54,7 @@ namespace NXA.SC.Caas.Controllers {
             var dtoStr = JsonSerializer.Serialize(dto);
             _logger.LogTrace($"{request.Method} {request.Path} - {dtoStr}");
             
+            // TODO: Introduce Command + Mediator and remove from here
             var stored = await _taskPersistService.Store(dto);
 
             // TODO: Move to background cycle to break-down this SYNC pipeline to ASYNC one
