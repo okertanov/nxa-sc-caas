@@ -1,6 +1,4 @@
-﻿using NXA.SC.Caas.Models;
-
-namespace NXA.SC.Caas.Services.Token
+﻿namespace NXA.SC.Caas.Services.Token
 {
 	public interface ITokenService
 	{

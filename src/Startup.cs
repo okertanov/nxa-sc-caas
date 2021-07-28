@@ -16,8 +16,8 @@ using NXA.SC.Caas.Services.Persist.Impl;
 using NXA.SC.Caas.Services.Compiler;
 using NXA.SC.Caas.Services.Compiler.Impl;
 using NXA.SC.Caas.Services.Token;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace NXA.SC.Caas {
     public class Startup {

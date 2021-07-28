@@ -1,11 +1,9 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using NXA.SC.Caas.Models;
 
 namespace NXA.SC.Caas.Services.Token {
     public class TokenService : ITokenService
