@@ -8,10 +8,13 @@ using System.Text.Json;
 using NXA.SC.Caas.Models;
 using NXA.SC.Caas.Services.Persist;
 using NXA.SC.Caas.Services.Compiler;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace NXA.SC.Caas.Controllers {
     [ApiController]
-    [Route("/compile")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+	[Route("/compile")]
     public class CompilerController : ControllerBase {
         private readonly ILogger<CompilerController> _logger;
         private readonly ITaskPersistService _taskPersistService;
