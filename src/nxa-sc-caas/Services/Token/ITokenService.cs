@@ -2,6 +2,6 @@
 {
 	public interface ITokenService
 	{
-		string GenerateWebToken();
+		bool TokenIsValid(string token);
 	}
 }
