@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nxa-sc-caas", "src\nxa-sc-caas\nxa-sc-caas.csproj", "{228F26AC-2DF0-433A-9057-38921B39D018}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nxa-sc-caas.UnitTests", "src\nxa-sc-caas.UnitTests\nxa-sc-caas.UnitTests.csproj", "{04AE5DCF-3A67-4CA4-8DF2-DC1CDC99F8C2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{228F26AC-2DF0-433A-9057-38921B39D018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{228F26AC-2DF0-433A-9057-38921B39D018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{228F26AC-2DF0-433A-9057-38921B39D018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{228F26AC-2DF0-433A-9057-38921B39D018}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04AE5DCF-3A67-4CA4-8DF2-DC1CDC99F8C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04AE5DCF-3A67-4CA4-8DF2-DC1CDC99F8C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04AE5DCF-3A67-4CA4-8DF2-DC1CDC99F8C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04AE5DCF-3A67-4CA4-8DF2-DC1CDC99F8C2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34CFC278-6033-489A-903D-7D8CDF9CF234}
+	EndGlobalSection
+EndGlobal

@@ -1,20 +1,20 @@
 all:
-	make -C src $@
+	make -C src/nxa-sc-caas $@
 
 build:
-	make -C src $@
+	make -C src/nxa-sc-caas $@
 
 start-dev:
-	make -C src $@
+	make -C src/nxa-sc-caas $@
 
 start-prod:
-	make -C src $@
+	make -C src/nxa-sc-caas $@
 
 clean:
-	make -C src $@
+	make -C src/nxa-sc-caas $@
 
 distclean:
-	make -C src $@
+	make -C src/nxa-sc-caas $@
 
 docker-build:
 
