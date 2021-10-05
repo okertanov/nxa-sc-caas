@@ -18,7 +18,7 @@ namespace nxa_sc_caas.UnitTests
     public class TokenCreator
     {
         private static ILogger<TokenService> _logger { get { return new LoggerFactory().CreateLogger<TokenService>(); } set { } }
-        private static DbContextOptionsBuilder<ApiTokenContext> _dbOptBuilder { get { return new DbContextOptionsBuilder<ApiTokenContext>().UseInMemoryDatabase("Tokens"); } set { } }
+        private static DbContextOptionsBuilder<ApiTokenContext> _dbOptBuilder { get { return new DbContextOptionsBuilder<ApiTokenContext>(); } set { } }
         public static async Task<ApiTokenContext> AddTokensToDb()
         {
             var db = new ApiTokenContext(_dbOptBuilder.Options);
