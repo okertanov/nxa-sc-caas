@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="dotenv.net" Version="3.1.0" />
+    <PackageReference Include="Handlebars.Net" Version="2.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
       <PrivateAssets>all</PrivateAssets>
@@ -26,5 +27,10 @@
     <AssemblyAttribute Include="NXA.SC.Caas.Models.AbiVersionAttribute">
       <Version>1.2.3</Version>
     </AssemblyAttribute>
+  </ItemGroup>
+    
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\neo-devpack-dotnet\src\Neo.Compiler.CSharp\Neo.Compiler.CSharp.csproj" />
+    <ProjectReference Include="..\..\..\neo-devpack-dotnet\src\Neo.SmartContract.Framework\Neo.SmartContract.Framework.csproj" />
   </ItemGroup>
 </Project>
