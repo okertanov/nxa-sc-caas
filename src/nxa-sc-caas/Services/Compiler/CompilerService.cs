@@ -20,7 +20,6 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
         public Task<CompilerTask> Compile(CompilerTask task) {
             _logger.LogDebug($"Compiling: {task.Create?.ContractName}...");
             CompilerTask resultTask = task;
-            var strrr = File.ReadAllText(@"C:\Users\inese\Desktop\Repos\nxa-sc-caas\src\nxa-sc-caas.UnitTests\TestTokens\TestTeam11Token.cs");
             var sourceStr = task.Create!.ContractSource;
             var sourceStrNormalized = sourceStr.IsBase64String() ? Encoding.UTF8.GetString(Convert.FromBase64String(sourceStr)) : sourceStr;
             var template = Handlebars.Compile(sourceStrNormalized);
@@ -38,7 +37,7 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
             };
 
             var codeStr = template(data);
-            var neoRes = Neo.Compiler.CompilerService.Compile(strrr);
+            var neoRes = Neo.Compiler.CompilerService.Compile(codeStr);
 
             var neoErrors = neoRes.Diagnostics.Where(d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList();
             if (neoErrors.Count() > 0)
