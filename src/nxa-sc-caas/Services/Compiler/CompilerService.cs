@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HandlebarsDotNet;
 using Microsoft.Extensions.Logging;
 using NXA.SC.Caas.Models;
+using NXA.SC.Caas.Extensions;
 
 namespace NXA.SC.Caas.Services.Compiler.Impl {
     public class CompilerService: ICompilerService {
@@ -19,7 +20,9 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
             _logger.LogDebug($"Compiling: {task.Create?.ContractName}...");
             CompilerTask resultTask = task;
 
-            var template = Handlebars.Compile(task.Create!.ContractSource);
+            var sourceStr = task.Create!.ContractSource;
+            var sourceStrNormalized = sourceStr.IsBase64String() ? Encoding.UTF8.GetString(Convert.FromBase64String(sourceStr)) : sourceStr;
+            var template = Handlebars.Compile(sourceStrNormalized);
             var data = new
             {
                 SystemOwnerAddress = task.Create.SystemOwnerAddress,
@@ -41,7 +44,8 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
             {
                 var firstError = neoErrors.First();
                 var errorLine = firstError.Location.GetLineSpan().StartLinePosition.Line;
-                var errorCode = int.Parse(firstError.Id.Replace("CS", ""));
+                var errorCode = -1;
+                int.TryParse(firstError.Id.Replace("CS", ""), out errorCode);
                 var compilerError = new CompilerError(task.Create.ContractName, (uint)errorLine, errorCode, firstError.GetMessage(), null);
                 resultTask = task.SetError(compilerError);
             }

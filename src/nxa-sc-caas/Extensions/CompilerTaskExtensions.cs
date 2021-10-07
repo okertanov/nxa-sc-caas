@@ -1,4 +1,6 @@
-namespace NXA.SC.Caas.Models {
+using NXA.SC.Caas.Models;
+
+namespace NXA.SC.Caas.Extensions {
     public static class CompilerTaskExtensions {
         public static CompilerTask SetIdentifier(this CompilerTask task, string identifier) {
             var newTask = new CompilerTask(identifier, task.Status, task.Create, task.Result, task.Error);
