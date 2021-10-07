@@ -14,7 +14,7 @@ namespace NXA.SC.Caas.Models {
 
         [Required]
         [DataMember]
-        public int Code { get; private set; } = 0;
+        public string Code { get; private set; } = String.Empty;
 
         [Required]
         [DataMember]
@@ -23,7 +23,7 @@ namespace NXA.SC.Caas.Models {
         [DataMember]
         public string? Trace { get; private set; } = null;
 
-        public CompilerError(string file, uint line, int code, string messsage, string? trace) {
+        public CompilerError(string file, uint line, string code, string messsage, string? trace) {
             File = file;
             Line = line;
             Code = code;

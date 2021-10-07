@@ -7,6 +7,7 @@ using HandlebarsDotNet;
 using Microsoft.Extensions.Logging;
 using NXA.SC.Caas.Models;
 using NXA.SC.Caas.Extensions;
+using Neo.IO;
 
 namespace NXA.SC.Caas.Services.Compiler.Impl {
     public class CompilerService: ICompilerService {
@@ -19,7 +20,7 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
         public Task<CompilerTask> Compile(CompilerTask task) {
             _logger.LogDebug($"Compiling: {task.Create?.ContractName}...");
             CompilerTask resultTask = task;
-
+            var strrr = File.ReadAllText(@"C:\Users\inese\Desktop\Repos\nxa-sc-caas\src\nxa-sc-caas.UnitTests\TestTokens\TestTeam11Token.cs");
             var sourceStr = task.Create!.ContractSource;
             var sourceStrNormalized = sourceStr.IsBase64String() ? Encoding.UTF8.GetString(Convert.FromBase64String(sourceStr)) : sourceStr;
             var template = Handlebars.Compile(sourceStrNormalized);
@@ -37,25 +38,22 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
             };
 
             var codeStr = template(data);
-            var neoRes = Neo.Compiler.CompilerService.Compile(codeStr);
+            var neoRes = Neo.Compiler.CompilerService.Compile(strrr);
 
             var neoErrors = neoRes.Diagnostics.Where(d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList();
             if (neoErrors.Count() > 0)
             {
                 var firstError = neoErrors.First();
                 var errorLine = firstError.Location.GetLineSpan().StartLinePosition.Line;
-                var errorCode = -1;
-                int.TryParse(firstError.Id.Replace("CS", ""), out errorCode);
-                var compilerError = new CompilerError(task.Create.ContractName, (uint)errorLine, errorCode, firstError.GetMessage(), null);
+                var compilerError = new CompilerError(task.Create.ContractName, (uint)errorLine, firstError.Id, firstError.GetMessage(), null);
                 resultTask = task.SetError(compilerError);
             }
             else
             {
-                var compileRes = new CompilerResult(neoRes.Nef.Script, neoRes.Manifest.AsString());
+                var compileRes = new CompilerResult(neoRes.Nef.Script, neoRes.Nef.ToArray(), neoRes.Manifest.AsString());
                 resultTask = task
                     .SetResult(compileRes);
             }
-
             return Task.FromResult(resultTask);
         }
     }
