@@ -58,7 +58,7 @@ namespace Neo.SmartContract.Examples
         }
     }
 
-    [SupportedStandards("NEP-17")]
+    //[SupportedStandards("NEP-17")]
     [ContractPermission("*", "onNEP17Payment")]
     public abstract class NXANep17Token : NXATokenContract
     {
@@ -86,7 +86,7 @@ namespace Neo.SmartContract.Examples
             return true;
         }
 
-        public static void Mint(UInt160 account, BigInteger amount)
+        protected static void MintImpl(UInt160 account, BigInteger amount)
         {
             if (amount.Sign < 0) throw new ArgumentOutOfRangeException(nameof(amount));
             if (amount.IsZero) return;
@@ -95,7 +95,7 @@ namespace Neo.SmartContract.Examples
             PostTransfer(null, account, amount, null);
         }
 
-        public static void Burn(UInt160 account, BigInteger amount)
+        protected static void BurnImpl(UInt160 account, BigInteger amount)
         {
             if (amount.Sign < 0) throw new ArgumentOutOfRangeException(nameof(amount));
             if (amount.IsZero) return;
@@ -116,7 +116,7 @@ namespace Neo.SmartContract.Examples
     [ManifestExtra("Author", "Team11")]
     [ManifestExtra("Email", "okertanov@gmail.org")]
     [ManifestExtra("Description", "Team11 Token with CaaS")]
-    [SupportedStandards("NEP-17")]
+    //[SupportedStandards("NEP-17")]
     [ContractPermission("*", "onNEP17Payment")]
     public partial class Team11Token : NXANep17Token
     {
@@ -141,7 +141,7 @@ namespace Neo.SmartContract.Examples
         {
             if (update) return;
             ContractMap.Put(ownerKey, owner);
-            Team11Token.Mint(owner, Team11Token.InitialCoins);
+            //Team11Token.Mint(owner, Team11Token.InitialCoins);
         }
         
         public static UInt160 GetOwner()
@@ -152,13 +152,13 @@ namespace Neo.SmartContract.Examples
         public static new void Mint(UInt160 account, BigInteger amount)
         {
             if (!IsOwner()) throw new InvalidOperationException("No Authorization!");
-            NXANep17Token.Mint(account, amount);
+            NXANep17Token.MintImpl(account, amount);
         }
 
         public static new void Burn(UInt160 account, BigInteger amount)
         {
             if (!IsOwner()) throw new InvalidOperationException("No Authorization!");
-            NXANep17Token.Burn(account, amount);
+            NXANep17Token.BurnImpl(account, amount);
         }
 
         public static bool Update(ByteString nefFile, string manifest)
@@ -176,3 +176,29 @@ namespace Neo.SmartContract.Examples
         }
     }
 }
+
+/*
+block: 172030/172030  connected: 1  unconnected: 2 
+
+nxa> deploy /nxa-node-data/t11.bin /nxa-node-data/t11.manifest
+Contract hash: 0x9072b3814fc2de5b4e122f73703ff313317d4ed6
+Gas consumed: 10.0535103
+Network fee: 0.0462352
+Total fee: 10.0997455 GAS
+Relay tx? (no|yes): yes
+Signed and relayed transaction with hash:
+0xca393bd207ff355017631ec16a8a9cb16e02ea7d34ebbfa10d1874b5a143f34e
+
+balanceof 0x9072b3814fc2de5b4e122f73703ff313317d4ed6 NZJsKhsKzi9ipzjC57zU53EVMC97zqPDKG
+
+invoke 0x9072b3814fc2de5b4e122f73703ff313317d4ed6 mint NZJsKhsKzi9ipzjC57zU53EVMC97zqPDKG 1000
+
+invoke 0x9072b3814fc2de5b4e122f73703ff313317d4ed6 symbol
+
+convert NZJsKhsKzi9ipzjC57zU53EVMC97zqPDKG
+
+invoke 0x9072b3814fc2de5b4e122f73703ff313317d4ed6 balanceOf [{"type":"ByteArray","value":"ku5O5IVJRg4eLYfZSxhnZdU47U0="}]
+
+invoke 0x9072b3814fc2de5b4e122f73703ff313317d4ed6 mint [{"type":"ByteArray","value":"ku5O5IVJRg4eLYfZSxhnZdU47U0="},{"type":"Integer","value":"100000"}]
+
+*/
