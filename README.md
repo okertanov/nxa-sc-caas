@@ -39,6 +39,11 @@ Useful commands
     docker logs -f <hash>
     docker exec -it <hash> /bin/bash
 
+### Docker Compose
+
+    docker compose up -d
+    docker compose down
+
 ### Linux
 
     ps
