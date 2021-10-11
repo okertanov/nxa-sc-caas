@@ -59,7 +59,7 @@ networks:
 
 volumes:
   caas-data:
-+ caas-database-data:
+  caas-database-data:
 
 secrets:
   apitokens:
