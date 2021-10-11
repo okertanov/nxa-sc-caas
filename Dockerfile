@@ -46,7 +46,7 @@ RUN make
 
 # Build CaaS
 WORKDIR /${NXA_SC_CAAS_DIR}
-RUN git checkout DVITA-244
+RUN git checkout master
 RUN make
 
 # RUN
