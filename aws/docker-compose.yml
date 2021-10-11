@@ -1,13 +1,9 @@
 version: '3.7'
 services:
   nxa-sc-caas:
-    image: nxa-sc-caas:latest
+    image: registry.teamxi.cloud/nxa-nft/nxa-sc-caas:latest
     container_name: nxa-sc-caas
     hostname: "nxa-sc-caas"
-    build:
-      dockerfile: Dockerfile
-      target: run
-      context: .
     links:
       - "caas-database:caas-database"
     depends_on:
