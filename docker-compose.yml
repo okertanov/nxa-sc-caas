@@ -33,6 +33,7 @@ services:
       - apitokens
     volumes:
       - ./db:/docker-entrypoint-initdb.d/
+      - caas-database-data:/var/lib/postgresql/data
     ports:
       - ${DB_PORT}:${DB_PORT}
     networks:
@@ -58,6 +59,7 @@ networks:
 
 volumes:
   caas-data:
++ caas-database-data:
 
 secrets:
   apitokens:
