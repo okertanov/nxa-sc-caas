@@ -30,7 +30,7 @@ namespace Neo.SmartContract.Examples
         public static BigInteger BalanceOf(UInt160 owner)
         {
             if (owner is null || !owner.IsValid)
-                throw new Exception("The argument \"owner\" is invalid.");
+                throw new Exception("BalanceOf: The argument 'owner' is invalid.");
             StorageMap balanceMap = new(Storage.CurrentContext, Prefix_Balance);
             return (BigInteger)balanceMap[owner];
         }
@@ -58,7 +58,7 @@ namespace Neo.SmartContract.Examples
         }
     }
 
-    //[SupportedStandards("NEP-17")]
+    [SupportedStandards("NEP-17")]
     [ContractPermission("*", "onNEP17Payment")]
     public abstract class NXANep17Token : NXATokenContract
     {
@@ -70,11 +70,11 @@ namespace Neo.SmartContract.Examples
         public static bool Transfer(UInt160 from, UInt160 to, BigInteger amount, object data)
         {
             if (from is null || !from.IsValid)
-                throw new Exception("The argument \"from\" is invalid.");
+                throw new Exception("Transfer: The argument 'from' is invalid.");
             if (to is null || !to.IsValid)
-                throw new Exception("The argument \"to\" is invalid.");
+                throw new Exception("Transfer: The argument 'to' is invalid.");
             if (amount < 0)
-                throw new Exception("The amount must be a positive number.");
+                throw new Exception("Transfer: The amount must be a positive number.");
             if (!Runtime.CheckWitness(from)) return false;
             if (amount != 0)
             {
@@ -116,7 +116,8 @@ namespace Neo.SmartContract.Examples
     [ManifestExtra("Author", "Team11")]
     [ManifestExtra("Email", "okertanov@gmail.org")]
     [ManifestExtra("Description", "Team11 Token with CaaS")]
-    //[SupportedStandards("NEP-17")]
+    [ManifestExtra("Version", "1.1")]
+    [SupportedStandards("NEP-17")]
     [ContractPermission("*", "onNEP17Payment")]
     public partial class Team11Token : NXANep17Token
     {
@@ -125,8 +126,7 @@ namespace Neo.SmartContract.Examples
         // Prefix_TotalSupply = 0x00; Prefix_Balance = 0x01;
         private const byte Prefix_Contract = 0x02;
         public static readonly StorageMap ContractMap = new StorageMap(Storage.CurrentContext, Prefix_Contract);
-        private static readonly byte[] ownerKey = "owner".ToByteArray();
-        private static bool IsOwner() => Runtime.CheckWitness(GetOwner());
+        private static bool IsOwner() => Runtime.CheckWitness(owner);
         private static int InitialCoins => 1_000_000;
 
         [DisplayName("Name")]
@@ -140,37 +140,31 @@ namespace Neo.SmartContract.Examples
         public static void _deploy(object data, bool update)
         {
             if (update) return;
-            ContractMap.Put(ownerKey, owner);
-            //Team11Token.Mint(owner, Team11Token.InitialCoins);
-        }
-        
-        public static UInt160 GetOwner()
-        {
-            return (UInt160)ContractMap.Get(ownerKey);
+            Team11Token.Mint(owner, Team11Token.InitialCoins);
         }
 
         public static new void Mint(UInt160 account, BigInteger amount)
         {
-            if (!IsOwner()) throw new InvalidOperationException("No Authorization!");
+            if (!IsOwner()) throw new InvalidOperationException($"Mint: No Authorization for: {account?.ToAddress(0)}");
             NXANep17Token.MintImpl(account, amount);
         }
 
         public static new void Burn(UInt160 account, BigInteger amount)
         {
-            if (!IsOwner()) throw new InvalidOperationException("No Authorization!");
+            if (!IsOwner()) throw new InvalidOperationException($"Burn: No Authorization for: {account?.ToAddress(0)}");
             NXANep17Token.BurnImpl(account, amount);
         }
 
         public static bool Update(ByteString nefFile, string manifest)
         {
-            if (!IsOwner()) throw new InvalidOperationException("No Authorization!");
+            if (!IsOwner()) throw new InvalidOperationException($"Update: No Authorization");
             ContractManagement.Update(nefFile, manifest, null);
             return true;
         }
 
         public static bool Destroy()
         {
-            if (!IsOwner()) throw new InvalidOperationException("No Authorization!");
+            if (!IsOwner()) throw new InvalidOperationException($"Destroy: No Authorization");
             ContractManagement.Destroy();
             return true;
         }
@@ -190,15 +184,9 @@ Signed and relayed transaction with hash:
 0xca393bd207ff355017631ec16a8a9cb16e02ea7d34ebbfa10d1874b5a143f34e
 
 balanceof 0x9072b3814fc2de5b4e122f73703ff313317d4ed6 NZJsKhsKzi9ipzjC57zU53EVMC97zqPDKG
-
 invoke 0x9072b3814fc2de5b4e122f73703ff313317d4ed6 mint NZJsKhsKzi9ipzjC57zU53EVMC97zqPDKG 1000
-
 invoke 0x9072b3814fc2de5b4e122f73703ff313317d4ed6 symbol
-
 convert NZJsKhsKzi9ipzjC57zU53EVMC97zqPDKG
-
 invoke 0x9072b3814fc2de5b4e122f73703ff313317d4ed6 balanceOf [{"type":"ByteArray","value":"ku5O5IVJRg4eLYfZSxhnZdU47U0="}]
-
 invoke 0x9072b3814fc2de5b4e122f73703ff313317d4ed6 mint [{"type":"ByteArray","value":"ku5O5IVJRg4eLYfZSxhnZdU47U0="},{"type":"Integer","value":"100000"}]
-
 */
