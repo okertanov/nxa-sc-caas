@@ -15,3 +15,4 @@ packages
 *.suo
 *.testlog
 *testlog.manifest
+dist

@@ -1,22 +1,28 @@
 all: build
-	
-build:
+
+build: restore
+	dotnet publish -c Release -o ./dist
+
+restore:
 	dotnet restore
-	dotnet build
 
 start-dev:
 	ASPNETCORE_ENVIRONMENT=Development dotnet watch run
 
 start-prod:
 	dotnet run
+	
+align-project: nxa-sc-caas.csproj
+	dotnet add $< reference ../../../neo-devpack-dotnet/src/Neo.Compiler.CSharp/Neo.Compiler.CSharp.csproj
+	dotnet add $< reference ../../../neo-devpack-dotnet/src/Neo.SmartContract.Framework/Neo.SmartContract.Framework.csproj
 
 clean:
-	-@dotnet clean
-	-@rm -rf ./obj
+	-@dotnet clean 2>&1 > /dev/null
+	-@rm -rf ./dist
 	-@rm -rf ./bin
-	
-distclean: clean
+	-@rm -rf ./obj
 
-.PHONY: all build start clean distclean
+.PHONY: all build restore align-project clean
 
 .SILENT: clean distclean
+
