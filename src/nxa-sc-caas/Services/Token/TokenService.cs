@@ -19,6 +19,8 @@ namespace NXA.SC.Caas.Services.Token {
         {
             bool tokenActive = false;
             bool tokenNotExpired = false;
+            _logger.LogInformation($"Total tokens found in in db: {_context.Tokens.Count()}");
+
             var tokenInDb = _context.Tokens.SingleOrDefault(t=>t.Token == token);
             bool tokenExistsInDb = tokenInDb != null;
 
