@@ -51,7 +51,7 @@ deploy_after_merge:
   - ssh ubuntu@$REMOTE_HOST "echo -n $HARBOR_PASSWORD | sudo docker login -u $HARBOR_USERNAME --password-stdin $HARBOR_REGISTRY"
   #
   - scp ./aws/* ubuntu@$REMOTE_HOST:~/docker-compose/
-  - scp ./db/ ubuntu@$REMOTE_HOST:~/db/
+  - scp ./db/* ubuntu@$REMOTE_HOST:~/db/
   - ssh ubuntu@$REMOTE_HOST "ls; pwd;"
   - ssh ubuntu@$REMOTE_HOST "cd db; chmod +X 01-init.sh; ./01-init.sh; cd .."
   - ssh ubuntu@$REMOTE_HOST "cd docker-compose/; sudo docker-compose down || true"
