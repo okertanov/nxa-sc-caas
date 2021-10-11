@@ -16,20 +16,11 @@ namespace NXA.SC.Caas.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var envFilePath= Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\"));
-            var dotEnvOpts = new DotEnvOptions(ignoreExceptions: true, envFilePaths: new[] { Path.Combine(envFilePath, ".env") });
-            DotEnv.Load(dotEnvOpts);
-            var allEnvVals = DotEnv.Read(dotEnvOpts);
-
-            if (allEnvVals.Count == 0) 
-            {
-                options.UseInMemoryDatabase("Tokens");
-                return;
-            }
-
-            var host = allEnvVals["DB_HOST"];
-            var port = allEnvVals["DB_PORT"];
-            var connString = $"Host={host};Port={port};Username=docker;Password=docker;Database=caas_database;";
+            var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+            var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
+            var dbUser = Environment.GetEnvironmentVariable("API_DB_USER");
+            var dbPwd = Environment.GetEnvironmentVariable("API_DB_PASS");
+            var connString = $"Host={dbHost};Port={dbPort};Username={dbUser};Password={dbPwd};Database=caas_database;";
             options.UseNpgsql(connString);
         }
     }
