@@ -23,12 +23,36 @@ To deploy
 
 TODO
 ----
-[ ] Persistence layer
-[ ] Bearer Auth
-[ ] Dockerize it
-[ ] NEO Compiler to test
-[ ] Background task worker
-[ ] WS or other RT notify transport
+[ ] Persistence layer  
+[ ] Bearer Auth  
+[ ] Dockerize it  
+[ ] NEO Compiler to test  
+[ ] Background task worker  
+[ ] WS or other RT notify transport  
+
+Useful commands
+---------------
+
+### Docker
+
+    docker ps
+    docker logs -f <hash>
+    docker exec -it <hash> /bin/bash
+
+### Linux
+
+    ps
+    pwd
+    env
+    ls
+    ls -l
+    ll
+
+### GIT
+
+    git status
+    git checkout -b <branch-name>
+
 
 
 Links
