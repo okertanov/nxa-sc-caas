@@ -16,6 +16,7 @@ namespace NXA.SC.Caas {
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => {
+                    webBuilder.UseUrls("http://*:5500");
                     webBuilder.UseStartup<Startup>();
                 });
     }

@@ -55,9 +55,9 @@ namespace NXA.SC.Caas {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NXA SC Caas v1"));
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NXA SC Caas v1"));
             app.UsePathBase("/api");
             app.UseRouting();
             app.UseHttpsRedirection();
