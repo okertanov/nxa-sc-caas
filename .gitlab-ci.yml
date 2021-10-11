@@ -59,6 +59,8 @@ manual_deploy:
   - ssh ubuntu@$REMOTE_HOST "echo -n $HARBOR_PASSWORD | sudo docker login -u $HARBOR_USERNAME --password-stdin $HARBOR_REGISTRY"
   #
   - scp ./docker-compose.yml ubuntu@$REMOTE_HOST:~/docker-compose/
+  - scp ./db_apitokens.txt ubuntu@$REMOTE_HOST:~/docker-compose/
+  - scp ./.env ubuntu@$REMOTE_HOST:~/docker-compose/
   - ssh ubuntu@$REMOTE_HOST "ls; pwd;"
   - ssh ubuntu@$REMOTE_HOST "cd docker-compose/; sudo docker-compose down || true"
   - ssh ubuntu@$REMOTE_HOST "cd docker-compose/; sudo docker-compose pull"
