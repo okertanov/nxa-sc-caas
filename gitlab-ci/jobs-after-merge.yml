@@ -53,7 +53,6 @@ deploy_after_merge:
   - scp ./aws/* ubuntu@$REMOTE_HOST:~/docker-compose/
   - scp ./db/* ubuntu@$REMOTE_HOST:~/db/
   - ssh ubuntu@$REMOTE_HOST "ls; pwd;"
-  - ssh ubuntu@$REMOTE_HOST "cd db; chmod +X 01-init.sh; ./01-init.sh; cd .."
   - ssh ubuntu@$REMOTE_HOST "cd docker-compose/; sudo docker-compose down || true"
   - ssh ubuntu@$REMOTE_HOST "cd docker-compose/; sudo docker-compose pull"
   - ssh ubuntu@$REMOTE_HOST "cd docker-compose/; sudo docker-compose up --force-recreate -d"
