@@ -1,0 +1,17 @@
+Test_build_before_merge:
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
+  stage: build
+  tags:
+    - docker
+    - build
+  script:
+    - docker pull $REGISTRY_IMAGE:latest || true
+    - >
+      docker build -f Dockerfile
+      .
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: always
+    - when: never
