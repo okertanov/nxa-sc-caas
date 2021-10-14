@@ -43,6 +43,10 @@ namespace NXA.SC.Caas.Models {
 
         [Required]
         [DataMember]
+        public string ContractInitialCoins { get; set; } = String.Empty;
+
+        [Required]
+        [DataMember]
         public string ContractSource { get; set; } = String.Empty;
 
         [DataMember]
