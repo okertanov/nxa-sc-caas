@@ -1,7 +1,12 @@
 all: build
 
-build: restore
-	dotnet publish -c Release -o ./dist
+build: restore client-build
+	dotnet publish -c Release -o ./dist 
+	echo " " >> ./dist/CodeEditor/src/file.ts
+
+client-build:
+	cd CodeEditor; npm install
+	cd CodeEditor; npm run build 
 
 restore:
 	dotnet restore

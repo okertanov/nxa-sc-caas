@@ -16,11 +16,12 @@ ENV NEO_DEVPACK_DIR=neo-devpack-dotnet
 ENV NXA_SC_CAAS_REPO=https://${GITLAB_TOKEN}@gitlab.teamxi.cloud/nxa/neo-frontier-launchpad-2021/nxa-sc-caas.git
 ENV NXA_SC_CAAS_DIR=nxa-sc-caas-dir
 
-# Install deps
+RUN curl --silent --location https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get update && apt-get install -y \
-    build-essential \
+build-essential  \
     git \
-    zip
+    zip \
+    nodejs
 
 # Clone all repos
 WORKDIR /
@@ -54,13 +55,18 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS run
 
 ENV NXA_SC_CAAS_DIR=nxa-sc-caas-dir
 
+RUN curl --silent --location https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get update && apt-get install -y \
     build-essential \
-    procps
+    procps\
+    nodejs
 
 WORKDIR /${NXA_SC_CAAS_DIR}
 
 COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas/dist ./
+COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas/CodeEditor ./CodeEditor
+
+RUN npm install -g @angular/cli
 
 VOLUME /caas-data
 
