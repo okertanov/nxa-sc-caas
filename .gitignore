@@ -16,3 +16,4 @@ packages
 *.testlog
 *testlog.manifest
 dist
+**/node_modules

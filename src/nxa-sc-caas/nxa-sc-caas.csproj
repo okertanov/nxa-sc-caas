@@ -7,13 +7,20 @@
   <ItemGroup>
     <PackageReference Include="dotenv.net" Version="3.1.0" />
     <PackageReference Include="Handlebars.Net" Version="2.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.10" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.4.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Node.js" Version="5.3.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.10" />
+    <PackageReference Include="Npm" Version="3.5.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <AssemblyAttribute Include="NXA.SC.Caas.Models.ApiVersionAttribute">
       <Version>1.0.0</Version>
@@ -33,4 +40,14 @@
     <ProjectReference Include="..\..\..\neo-devpack-dotnet\src\Neo.Compiler.CSharp\Neo.Compiler.CSharp.csproj" />
     <ProjectReference Include="..\..\..\neo-devpack-dotnet\src\Neo.SmartContract.Framework\Neo.SmartContract.Framework.csproj" />
   </ItemGroup>
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('CodeEditor/node_modules') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec Command="npm install" WorkingDirectory="CodeEditor"></Exec>
+    <Exec Command="npm run build" WorkingDirectory="CodeEditor "></Exec>
+  </Target>
 </Project>

@@ -13,6 +13,9 @@ align-project:
 clean:
 	make -C src/nxa-sc-caas $@
 
+client-build:
+	make -C src/nxa-sc-caas $@
+
 start-dev:
 	make -C src/nxa-sc-caas $@
 

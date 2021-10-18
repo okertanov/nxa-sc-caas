@@ -1,0 +1,102 @@
+
+<table>
+<tr>
+    <td>
+        <app-monaco-editor [(code)]="initCode"></app-monaco-editor>
+    </td>
+    <td>
+        <tr>
+            <td>
+                SystemOwnerAddress:
+            </td>
+            <td>
+                <input type="text" id="systemOwnerAddress" class="inputField" value="owner" #systemOwnerAddress>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                ContractAuthorAddress:
+            </td>
+            <td>
+                <input type="text" id="contractAuthorAddress" class="inputField" value="address" #contractAuthorAddress>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                ContractAuthorName:
+            </td>
+            <td>
+                <input type="text" id="contractAuthorName" class="inputField" value="name" #contractAuthorName>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                ContractAuthorEmail:
+            </td>
+            <td>
+                <input type="text" id="contractAuthorEmail" class="inputField" value="email" #contractAuthorEmail>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                ContractName:
+            </td>
+            <td>
+                <input type="text" id="contractName" class="inputField" value="cname" #contractName>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                ContractDescription:
+            </td>
+            <td>
+                <input type="text" id="contractDescription" class="inputField" value="desc" #contractDescription>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                ContractSymbol:
+            </td>
+            <td>
+                <input type="text" id="contractSymbol" class="inputField" value="SYMBOL" #contractSymbol>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                ContractFactor:
+            </td>
+            <td>
+                <input type="text" id="contractFactor" class="inputField" value="1" #contractFactor>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                ContractDecimals:
+            </td>
+            <td>
+                <input type="text" id="contractDecimals" class="inputField" value="2" #contractDecimals>
+            </td>
+        </tr>
+    </td>
+</tr>
+
+</table>
+<br>
+<div>
+    <table>
+        <tr>
+            <td></td>
+            <td>Token:</td>
+            <td>
+            <input type="text" id="tokenInput" style="height: 15px; width: 500px;" #tokenVal>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button (click)="compileCode()"> Compile </button></td>
+            <td><button (click)="clearCode()"> Clear </button></td>
+        </tr>
+    </table>
+</div>
+<br>
+<app-monaco-editor [(code)]="resultCode"></app-monaco-editor>

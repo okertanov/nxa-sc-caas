@@ -17,12 +17,17 @@ using NXA.SC.Caas.Services.Token;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using NXA.SC.Caas.Models;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
+using System.IO;
 
-namespace NXA.SC.Caas {
-    public class Startup {
+namespace NXA.SC.Caas
+{
+    public class Startup
+    {
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration) {
+        public Startup(IConfiguration configuration)
+        {
             Configuration = configuration;
         }
 
@@ -42,10 +47,16 @@ namespace NXA.SC.Caas {
                 c.OperationFilter<ApiTokenOperationFilter>();
             });
             services.AddHealthChecks();
+            var clientAppRoot = "./CodeEditor/dist";
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = clientAppRoot;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
 
             app.Use((context, next) =>
             {
@@ -63,9 +74,18 @@ namespace NXA.SC.Caas {
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.UseAuthentication();
-            app.UseEndpoints(endpoints => {
+            app.UseEndpoints(endpoints =>
+            {
                 endpoints.MapControllers();
                 endpoints.MapHealthChecks("/Status");
             });
+            app.UseFileServer();
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "./CodeEditor";
+                spa.Options.DefaultPage = new PathString("/code-editor.html");
+                spa.UseAngularCliServer(npmScript: "start");
+            });
         }
-    } }
+    }
+}
