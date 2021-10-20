@@ -32,7 +32,6 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
                 ContractName = task.Create.ContractName,
                 ContractDescription = task.Create.ContractDescription,
                 ContractSymbol = task.Create.ContractSymbol,
-                ContractFactor = task.Create.ContractFactor,
                 ContractDecimals = task.Create.ContractDecimals,
                 ContractInitialCoins = task.Create.ContractInitialCoins
             };
