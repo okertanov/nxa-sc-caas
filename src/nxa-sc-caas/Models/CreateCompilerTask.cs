@@ -35,10 +35,6 @@ namespace NXA.SC.Caas.Models {
 
         [Required]
         [DataMember]
-        public string ContractFactor { get; set; } = String.Empty;
-
-        [Required]
-        [DataMember]
         public string ContractDecimals { get; set; } = String.Empty;
 
         [Required]

@@ -19,6 +19,8 @@ using Microsoft.EntityFrameworkCore;
 using NXA.SC.Caas.Models;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using System.IO;
+using NXA.SC.Caas.Services.Db;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace NXA.SC.Caas
 {
@@ -38,6 +40,7 @@ namespace NXA.SC.Caas
             services.AddScoped<ITaskPersistService, TaskPersistService>();
             services.AddScoped<ICompilerService, CompilerService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IDbSettings, DbSettings>();
             services.AddDbContext<ApiTokenContext>();
             services.AddAuthentication(TokenAuthOptions.DefaultScemeName)
                     .AddScheme<TokenAuthOptions, ApiTokenHandler>(TokenAuthOptions.DefaultScemeName, null);
@@ -70,6 +73,14 @@ namespace NXA.SC.Caas
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NXA SC Caas v1"));
             app.UsePathBase("/api");
+            app.UseExceptionHandler(c => c.Run(async context =>
+            {
+                var exception = context.Features.Get<IExceptionHandlerPathFeature>().Error;
+                var lf = app.ApplicationServices.GetService<ILoggerFactory>();
+                var logger = lf!.CreateLogger("exceptionHandlerLogger");
+                logger.LogDebug(exception.StackTrace);
+                await context.Response.WriteAsJsonAsync(exception.Message);
+            }));
             app.UseRouting();
             app.UseHttpsRedirection();
             app.UseAuthorization();

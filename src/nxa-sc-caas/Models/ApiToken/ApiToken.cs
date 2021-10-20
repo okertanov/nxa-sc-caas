@@ -10,5 +10,6 @@ namespace NXA.SC.Caas.Models {
         public bool Active { get; set; } = false;
         public int? ClientId { get; set; }
         public string? Description { get; set; }
+        public int Rates { get; set; }
     }
 }

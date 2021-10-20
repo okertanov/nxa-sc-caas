@@ -30,7 +30,7 @@ export class AppComponent {
       contractName: (document.getElementById("contractName") as HTMLInputElement).value,
       contractDescription: (document.getElementById("contractDescription") as HTMLInputElement).value,
       contractSymbol: (document.getElementById("contractSymbol") as HTMLInputElement).value,
-      contractFactor: (document.getElementById("contractFactor") as HTMLInputElement).value,
+      contractFactor: (document.getElementById("contractInitialCoins") as HTMLInputElement).value,
       contractDecimals: (document.getElementById("contractDecimals") as HTMLInputElement).value,
       contractSource: this.initCode
     };

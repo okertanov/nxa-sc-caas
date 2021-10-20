@@ -1,3 +1,5 @@
+DOCKER_COMPOSE_FILE=docker-compose.yml
+
 all:
 	make -C src/nxa-sc-caas $@
 
@@ -22,7 +24,21 @@ start-dev:
 start-prod:
 	make -C src/nxa-sc-caas $@
 
-.PHONY: all build restore align-project clean
+docker-build:
+	docker-compose -f ${DOCKER_COMPOSE_FILE} build --parallel
 
-.SILENT: clean
+docker-rebuild:
+	docker-compose -f ${DOCKER_COMPOSE_FILE} build --parallel --no-cache --force-rm --pull
+
+docker-stop:
+	docker-compose -f ${DOCKER_COMPOSE_FILE} down --remove-orphans
+
+docker-clean:
+	docker-compose -f ${DOCKER_COMPOSE_FILE} rm -s -f -v
+
+.PHONY: all build restore align-project clean\
+			docker-build docker-rebuild docker-stop\
+			docker-clean
+
+.SILENT: clean docker-clean
 

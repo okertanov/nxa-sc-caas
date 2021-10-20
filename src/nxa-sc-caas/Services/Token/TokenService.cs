@@ -15,13 +15,27 @@ namespace NXA.SC.Caas.Services.Token {
             _logger = logger;
             _context = context;
         }
-        public bool TokenIsValid(string token) 
+        public bool TokenIsValid(string token)
         {
             bool tokenActive = false;
             bool tokenNotExpired = false;
-            _logger.LogInformation($"Total tokens found in in db: {_context.Tokens.Count()}");
+            bool valid = false;
 
-            var tokenInDb = _context.Tokens.SingleOrDefault(t=>t.Token == token);
+            if (!_context.Database.CanConnect())
+            {
+                _logger.LogError("Cannot connect to the db!");
+                return valid;
+            }
+            var tokenCount = _context.Tokens.Count();
+
+            if (tokenCount == 0)
+            {
+                _logger.LogError("No tokens found in db!");
+                return valid;
+            }
+
+            _logger.LogInformation($"Total tokens found in in db: {tokenCount}");
+            var tokenInDb = _context.Tokens.SingleOrDefault(t => t.Token == token);
             bool tokenExistsInDb = tokenInDb != null;
 
             if (tokenExistsInDb)
@@ -30,7 +44,7 @@ namespace NXA.SC.Caas.Services.Token {
                 tokenNotExpired = tokenInDb.ExpirationDate > DateTime.Now;
             }
 
-            var valid = tokenExistsInDb && tokenActive && tokenNotExpired;
+            valid = tokenExistsInDb && tokenActive && tokenNotExpired;
             _logger.LogInformation($"{(tokenInDb ?? new ApiToken()).Token} : " +
                 $"Token exists in db = {tokenExistsInDb};" +
                 $"Token is active = {tokenActive};" +
