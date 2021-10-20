@@ -15,12 +15,13 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
       "ExpirationDate" DATE NOT NULL,
       "Active" BOOLEAN NOT NULL,
       "ClientId" INT,
-      "Description" VARCHAR(200)
+      "Description" VARCHAR(200),
+      "Rates" INT
 	);
 	CREATE INDEX idx_token_id ON "Tokens" ("Id");
   COMMIT;
   BEGIN;
-    INSERT INTO "Tokens"("Guid", "Token", "ExpirationDate", "Active","ClientId","Description")
+    INSERT INTO "Tokens"("Guid", "Token", "ExpirationDate", "Active", "ClientId", "Description", "Rates")
     VALUES
     $TOKENVALS
   COMMIT;
