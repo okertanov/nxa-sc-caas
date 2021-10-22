@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using NXA.SC.Caas.Models;
 using NXA.SC.Caas.Extensions;
 using Neo.IO;
+using MediatR;
+using System.Threading;
 
 namespace NXA.SC.Caas.Services.Compiler.Impl {
     public class CompilerService: ICompilerService {
@@ -55,5 +57,22 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
             }
             return Task.FromResult(resultTask);
         }
+    }
+    public class CompileCommandHandler : IRequestHandler<CompileCommand, CompilerTask>
+    {
+        private readonly ICompilerService _compilerService;
+        public CompileCommandHandler(ICompilerService compilerService)
+        {
+            _compilerService = compilerService;
+        }
+
+        public Task<CompilerTask> Handle(CompileCommand request, CancellationToken cancellationToken)
+        {
+            return _compilerService.Compile(request.Task);
+        }
+    }
+    public class CompileCommand : IRequest<CompilerTask>
+    {
+        public CompilerTask Task { get; set; }
     }
 }
