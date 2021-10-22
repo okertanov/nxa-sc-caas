@@ -21,6 +21,8 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using System.IO;
 using NXA.SC.Caas.Services.Db;
 using Microsoft.AspNetCore.Diagnostics;
+using MediatR;
+using System.Reflection;
 
 namespace NXA.SC.Caas
 {
@@ -55,6 +57,7 @@ namespace NXA.SC.Caas
             {
                 configuration.RootPath = clientAppRoot;
             });
+            services.AddMediatR(Assembly.GetExecutingAssembly());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using NXA.SC.Caas.Models;
-using NXA.SC.Caas.Services.Persist;
-using NXA.SC.Caas.Services.Compiler;
 using Microsoft.AspNetCore.Authorization;
+using MediatR;
+using NXA.SC.Caas.Services.Persist.Impl;
+using NXA.SC.Caas.Services.Compiler.Impl;
 
 namespace NXA.SC.Caas.Controllers {
     [ApiController]
@@ -16,17 +17,13 @@ namespace NXA.SC.Caas.Controllers {
     [Route("[controller]")]
     public class CompilerController : ControllerBase {
         private readonly ILogger<CompilerController> _logger;
-        private readonly ITaskPersistService _taskPersistService;
-        private readonly ICompilerService _compilerService;
+        private readonly IMediator _mediator;
 
-        public CompilerController(
-            ILogger<CompilerController> logger,
-            ITaskPersistService taskPersistService,
-            ICompilerService compilerService
+        public CompilerController(IMediator mediator,
+            ILogger<CompilerController> logger
         ) {
+            _mediator = mediator;
             _logger = logger;
-            _taskPersistService = taskPersistService;
-            _compilerService = compilerService;
         }
 
         [HttpGet]
@@ -37,7 +34,8 @@ namespace NXA.SC.Caas.Controllers {
             var request = HttpContext.Request;
             _logger.LogTrace($"{request.Method} {request.Path}");
 
-            var result = await _taskPersistService.GetAll(offset, limit);
+            var command = new GetAllTasksCommand { Offset = offset, Limit = limit };
+            var result = await _mediator.Send(command);
             return result;
         }
 
@@ -46,7 +44,8 @@ namespace NXA.SC.Caas.Controllers {
             var request = HttpContext.Request;
             _logger.LogTrace($"{request.Method} {request.Path} - {identifier}");
 
-            var result = await _taskPersistService.GetByIdentifier(identifier);
+            var command = new GetTasksByIdCommand { Identifier = identifier };
+            var result = await _mediator.Send(command);
             return result;
         }
 
@@ -55,14 +54,16 @@ namespace NXA.SC.Caas.Controllers {
             var request = HttpContext.Request;
             var dtoStr = JsonSerializer.Serialize(dto);
             _logger.LogTrace($"{request.Method} {request.Path} - {dtoStr}");
-            
-            // TODO: Introduce Command + Mediator and remove from here
-            var stored = await _taskPersistService.Store(dto);
+
+            var storeCommand = new StoreTasksCommand { Task = dto };
+            var stored = await _mediator.Send(storeCommand);
 
             // TODO: Move to background cycle to break-down this SYNC pipeline to ASYNC one
-            var compiled = await _compilerService.Compile(stored);
+            var compileCommand = new CompileCommand { Task = stored };
+            var compiled = await _mediator.Send(compileCommand);
 
-            var updated = await _taskPersistService.Update(compiled);
+            var updateCommand = new UpdateTasksCommand { Task = compiled };
+            var updated = await _mediator.Send(updateCommand);
 
             return updated;
         }
@@ -72,7 +73,8 @@ namespace NXA.SC.Caas.Controllers {
             var request = HttpContext.Request;
             _logger.LogTrace($"{request.Method} {request.Path} - {identifier}");
 
-            var result = await _taskPersistService.DeleteByIdentifier(identifier);
+            var command = new DeleteTasksByIdCommand { Identifier = identifier };
+            var result = await _mediator.Send(command);
             return result;
         }
     }

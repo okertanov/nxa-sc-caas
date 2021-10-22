@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using NXA.SC.Caas.Services.Token;
 using System.Security.Principal;
+using MediatR;
 
 namespace NXA.SC.Caas.Models {
     public class TokenAuthOptions : AuthenticationSchemeOptions
@@ -18,17 +19,19 @@ namespace NXA.SC.Caas.Models {
 
     public class ApiTokenHandler : AuthenticationHandler<TokenAuthOptions>
     {
-        private readonly ITokenService _tokenService;
-        public ApiTokenHandler(IOptionsMonitor<TokenAuthOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, ITokenService tokenService)
+        private readonly IMediator _mediator;
+        public ApiTokenHandler(IOptionsMonitor<TokenAuthOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IMediator mediator)
     : base(options, logger, encoder, clock)
         {
-            _tokenService = tokenService;
+            _mediator = mediator;
         }
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             var token = Request.Headers["Token"].ToString();
 
-            if (_tokenService.TokenIsValid(token))
+            var command = new ValidateTokenCommand { Token = token};
+            var valid = _mediator.Send(command).Result;
+            if (valid)
             {
                 var identity = new GenericIdentity("id");
                 var principal = new ClaimsPrincipal(identity);
