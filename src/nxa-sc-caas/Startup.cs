@@ -58,6 +58,7 @@ namespace NXA.SC.Caas
                 configuration.RootPath = clientAppRoot;
             });
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddHostedService<CompilerBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

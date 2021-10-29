@@ -58,7 +58,7 @@ namespace NXA.SC.Caas.Services.Token {
     }
     public class ValidateTokenCommand : IRequest<bool>
     {
-        public string Token { get; set; }
+        public string Token { get; set; } = string.Empty;
     }
     public class TokenServiceCommandHandler : IRequestHandler<ValidateTokenCommand, bool>
     {
