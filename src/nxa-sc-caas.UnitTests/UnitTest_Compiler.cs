@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NXA.SC.Caas.Extensions;
 using NXA.SC.Caas.Models;
+using NXA.SC.Caas.Services.Compiler.Impl;
 
 namespace nxa_sc_caas.UnitTests
 {
@@ -32,7 +34,7 @@ namespace nxa_sc_caas.UnitTests
         public void Test_SetsResult()
         {
             var task = new CompilerTask();
-            var result = new CompilerResult(new byte[64], "manifestjson");
+            var result = new CompilerResult(new byte[64], new byte[64], "manifestjson");
             var newTask = task.SetResult(result);
             Assert.AreEqual(newTask.Result.Manifest, "manifestjson");
         }
@@ -40,9 +42,27 @@ namespace nxa_sc_caas.UnitTests
         public void Test_SetsError()
         {
             var task = new CompilerTask();
-            var error = new CompilerError("filestr", (uint)1, 123, "errormsg", string.Empty);
+            var error = new CompilerError("filestr", (uint)1, "123", "errormsg", string.Empty);
             var newTask = task.SetError(error);
             Assert.AreEqual(newTask.Error.Messsage, "errormsg");
+        }
+        [TestMethod]
+        public void Test_CompileError()
+        {
+            var compilerService = CompilerCreator.CreateCompilerService();
+            var task = CompilerCreator.GetInvalidSmartContractTask();
+            var result = compilerService.Compile(task);
+            Assert.IsNotNull(result.Result.Error);
+            Assert.IsNull(result.Result.Result);
+        }
+        [TestMethod]
+        public void Test_CompileResultValid()
+        {
+            var compilerService = CompilerCreator.CreateCompilerService();
+            var task = CompilerCreator.GetValidSmartContractTask();
+            var result = compilerService.Compile(task);
+            Assert.IsNull(result.Result.Error);
+            Assert.IsNotNull(result.Result.Result);
         }
     }
 }

@@ -20,7 +20,10 @@ namespace NXA.SC.Caas.Models
         {
             var command = new GetConnStrCommand();
             var connStr= _mediator.Send(command).Result;
-            options.UseNpgsql(connStr);
+            if (connStr != null)
+                options.UseNpgsql(connStr);
+            else
+                options.UseInMemoryDatabase("Tokens");
         }
     }
 }

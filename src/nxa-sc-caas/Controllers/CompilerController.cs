@@ -21,7 +21,7 @@ namespace NXA.SC.Caas.Controllers {
 
         public CompilerController(IMediator mediator,
             ILogger<CompilerController> logger
-        ) {
+            ) {
             _mediator = mediator;
             _logger = logger;
         }
@@ -52,20 +52,26 @@ namespace NXA.SC.Caas.Controllers {
         [HttpPut]
         public async Task<CompilerTask> Put(CreateCompilerTask dto) {
             var request = HttpContext.Request;
+            var asyncCompilation = request.Headers["AsynchronousCompilation"].ToString() == "true";
+
             var dtoStr = JsonSerializer.Serialize(dto);
             _logger.LogTrace($"{request.Method} {request.Path} - {dtoStr}");
 
-            var storeCommand = new StoreTasksCommand { Task = dto };
+            var storeCommand = new StoreTasksCommand { Task = dto, AsyncCompilation = asyncCompilation};
             var stored = await _mediator.Send(storeCommand);
 
-            // TODO: Move to background cycle to break-down this SYNC pipeline to ASYNC one
-            var compileCommand = new CompileCommand { Task = stored };
-            var compiled = await _mediator.Send(compileCommand);
+            if (!asyncCompilation)
+            {
+                var compileCommand = new CompileCommand { Task = stored };
+                var compiled = await _mediator.Send(compileCommand);
 
-            var updateCommand = new UpdateTasksCommand { Task = compiled };
-            var updated = await _mediator.Send(updateCommand);
+                var updateCommand = new UpdateTasksCommand { Task = compiled, AsyncCompilation = asyncCompilation };
+                var updated = await _mediator.Send(updateCommand);
 
-            return updated;
+                return updated;
+            }
+
+            return stored;
         }
 
         [HttpDelete("{identifier}")]
