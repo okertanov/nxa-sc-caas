@@ -66,8 +66,6 @@ WORKDIR /${NXA_SC_CAAS_DIR}
 COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas/dist ./
 COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas/CodeEditor ./CodeEditor
 
-RUN npm install -g @angular/cli
-
 VOLUME /caas-data
 
 ENTRYPOINT ["dotnet","nxa-sc-caas.dll"]
