@@ -95,11 +95,15 @@ namespace NXA.SC.Caas
                 endpoints.MapHealthChecks("/Status");
             });
             app.UseFileServer();
+            app.UseSpaStaticFiles();
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "./CodeEditor";
                 spa.Options.DefaultPage = new PathString("/code-editor.html");
-                spa.UseAngularCliServer(npmScript: "start");
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
             });
         }
     }
