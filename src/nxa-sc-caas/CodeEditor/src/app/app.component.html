@@ -1,16 +1,21 @@
 
 <table>
-<tr>
-    <td>
+<tr style="height:68vh;">
+    <td >
         <app-monaco-editor [(code)]="initCode"></app-monaco-editor>
     </td>
     <td>
+        <app-monaco-editor [(code)]="resultCode"></app-monaco-editor>
+    </td>
+</tr>
+<tr style="height:30vh;">
+    <td class="inputParams">
         <tr>
             <td>
                 SystemOwnerAddress:
             </td>
             <td>
-                <input type="text" id="systemOwnerAddress" class="inputField" value="owner" #systemOwnerAddress>
+                <input type="text" id="systemOwnerAddress" class="inputField" value="NiNmXL8FjEUEs1nfX9uHFBNaenxDHJtmuB" #systemOwnerAddress>
             </td>
         </tr>
         <tr>
@@ -18,7 +23,7 @@
                 ContractAuthorAddress:
             </td>
             <td>
-                <input type="text" id="contractAuthorAddress" class="inputField" value="address" #contractAuthorAddress>
+                <input type="text" id="contractAuthorAddress" class="inputField" value="NiNmXL8FjEUEs1nfX9uHFBNaenxDHJtmuB" #contractAuthorAddress>
             </td>
         </tr>
         <tr>
@@ -34,7 +39,7 @@
                 ContractAuthorEmail:
             </td>
             <td>
-                <input type="text" id="contractAuthorEmail" class="inputField" value="email" #contractAuthorEmail>
+                <input type="text" id="contractAuthorEmail" class="inputField" value="dev@dvita.com" #contractAuthorEmail>
             </td>
         </tr>
         <tr>
@@ -76,27 +81,18 @@
             <td>
                 <input type="text" id="contractDecimals" class="inputField" value="2" #contractDecimals>
             </td>
-        </tr>
     </td>
-</tr>
-
-</table>
-<br>
-<div>
-    <table>
+    <td class="inputParams">
         <tr>
-            <td></td>
-            <td>Token:</td>
             <td>
-            <input type="text" id="tokenInput" style="height: 15px; width: 500px;" #tokenVal>
+                <button (click)="compileCode()"> Compile </button>
             </td>
         </tr>
         <tr>
-            <td></td>
-            <td><button (click)="compileCode()"> Compile </button></td>
-            <td><button (click)="clearCode()"> Clear </button></td>
+            <td>
+                <button (click)="clearCode()"> Clear </button>
+            </td>
         </tr>
-    </table>
-</div>
-<br>
-<app-monaco-editor [(code)]="resultCode"></app-monaco-editor>
+    </td>
+</tr>
+</table>
