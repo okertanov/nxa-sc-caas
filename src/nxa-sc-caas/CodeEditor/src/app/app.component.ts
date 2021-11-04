@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MonacoEditorComponent } from './monaco-editor/monaco-editor.component';
+import { environment } from './../environments/environment';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,7 +20,7 @@ export class AppComponent {
   `;
 
   public compileCode(): void {
-    var token=(document.getElementById("tokenInput") as HTMLInputElement).value;
+    var token= environment.token;
     this.headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Token': token});
     var createCompilerTask:any = 
     {

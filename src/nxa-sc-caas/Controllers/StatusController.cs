@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Threading.Tasks;
 using System.Net;
+using System;
+using Newtonsoft.Json;
 
 namespace NXA.SC.Caas.Controllers {
     [ApiController]
@@ -14,7 +16,8 @@ namespace NXA.SC.Caas.Controllers {
     public class StatusController : ControllerBase 
     {
         private readonly ILogger<StatusController> _logger;
-        private readonly HealthCheckService _healthCheckService;
+        private readonly HealthCheckService _healthCheckService; 
+        public static readonly DateTime StartupTime = DateTime.Now;
 
         public StatusController(
             ILogger<StatusController> logger, HealthCheckService healthCheckService
@@ -32,8 +35,17 @@ namespace NXA.SC.Caas.Controllers {
             var report = await _healthCheckService.CheckHealthAsync();
             _logger.LogInformation(report.Status.ToString());
 
-            return report.Status == HealthStatus.Healthy ? Ok(report) :
-            StatusCode((int)HttpStatusCode.ServiceUnavailable, report);
+            var upTime = DateTime.Now - StartupTime;
+            var uptimeJson= JsonConvert.SerializeObject(upTime);
+
+            var result = new SystemStatus
+            {
+                Uptime = uptimeJson,
+                HealthInfo = report
+            };
+
+            return report.Status == HealthStatus.Healthy ? Ok(result) :
+            StatusCode((int)HttpStatusCode.ServiceUnavailable, result);
         }
 
     }

@@ -1,4 +1,17 @@
 .inputField {
     height: 15px; 
-    width: 100px;
+    width: 220px;
+    font-family: Consolas, Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 11px;
+    border: none;
+  }
+  .inputParams
+  {
+    font-size: 11px;
+    font-family: Consolas, Verdana, Geneva, Tahoma, sans-serif;
+    border-style: solid;
+    border-color: gray;
+    border-width: 1px;
+    padding-left: 50px;
+    width:50vw;
   }

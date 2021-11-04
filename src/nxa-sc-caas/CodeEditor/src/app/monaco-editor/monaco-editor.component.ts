@@ -73,8 +73,9 @@ export class MonacoEditorComponent implements AfterViewInit {
     this.codeEditorInstance = monaco.editor.create(this._editorContainer.nativeElement, {
       value: this.code,
       language: 'csharp',
-      theme: 'vs-dark',
-      fontSize: 12
+      theme: 'vs-light',
+      fontSize: 12,
+      automaticLayout: true
     });
 
     // To support two-way binding of the code

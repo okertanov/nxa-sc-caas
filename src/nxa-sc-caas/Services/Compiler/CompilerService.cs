@@ -10,18 +10,24 @@ using NXA.SC.Caas.Extensions;
 using Neo.IO;
 using MediatR;
 using System.Threading;
+using System.Diagnostics;
+using System.ComponentModel;
 
 namespace NXA.SC.Caas.Services.Compiler.Impl {
-    public class CompilerService: ICompilerService {
+    public class CompilerService : ICompilerService
+    {
         private readonly ILogger<CompilerService> _logger;
 
-        public CompilerService(ILogger<CompilerService> logger) {
+        public CompilerService(ILogger<CompilerService> logger)
+        {
             _logger = logger;
         }
 
-        public Task<CompilerTask> Compile(CompilerTask task) {
+        public Task<CompilerTask> Compile(CompilerTask task)
+        {
             _logger.LogDebug($"Compiling: {task.Create?.ContractName}...");
             CompilerTask resultTask = task;
+            var neoRes = new Neo.Compiler.CompileResult();
             var sourceStr = task.Create!.ContractSource;
             var sourceStrNormalized = sourceStr.IsBase64String() ? Encoding.UTF8.GetString(Convert.FromBase64String(sourceStr)) : sourceStr;
             var template = Handlebars.Compile(sourceStrNormalized);
@@ -39,8 +45,21 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
             };
 
             var codeStr = template(data);
-            var neoRes = Neo.Compiler.CompilerService.Compile(codeStr);
 
+            try
+            {
+                neoRes = Neo.Compiler.CompilerService.Compile(codeStr);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex.StackTrace);
+
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace!.GetFrame(0).GetFileLineNumber();
+                var compilerError = new CompilerError(task.Create.ContractName, (uint)line, ex.HResult.ToString(), ex.Message, ex.StackTrace);
+                resultTask = task.SetError(compilerError);
+                return Task.FromResult(resultTask);
+            }
             var neoErrors = neoRes.Diagnostics.Where(d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList();
             if (neoErrors.Count() > 0)
             {

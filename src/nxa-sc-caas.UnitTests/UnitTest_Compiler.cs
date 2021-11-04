@@ -49,8 +49,8 @@ namespace nxa_sc_caas.UnitTests
         [TestMethod]
         public void Test_CompileError()
         {
-            var compilerService = CompilerCreator.CreateCompilerService();
-            var task = CompilerCreator.GetInvalidSmartContractTask();
+            var compilerService = CompilerFactory.CreateCompilerService();
+            var task = CompilerFactory.GetInvalidSmartContractTask();
             var result = compilerService.Compile(task);
             Assert.IsNotNull(result.Result.Error);
             Assert.IsNull(result.Result.Result);
@@ -58,8 +58,8 @@ namespace nxa_sc_caas.UnitTests
         [TestMethod]
         public void Test_CompileResultValid()
         {
-            var compilerService = CompilerCreator.CreateCompilerService();
-            var task = CompilerCreator.GetValidSmartContractTask();
+            var compilerService = CompilerFactory.CreateCompilerService();
+            var task = CompilerFactory.GetValidSmartContractTask();
             var result = compilerService.Compile(task);
             Assert.IsNull(result.Result.Error);
             Assert.IsNotNull(result.Result.Result);

@@ -28,8 +28,7 @@ namespace NXA.SC.Caas.Models {
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             var token = Request.Headers["Token"].ToString();
-
-            var command = new ValidateTokenCommand { Token = token};
+            var command = new ValidateTokenCommand { Token = token };
             var valid = _mediator.Send(command).Result;
             if (valid)
             {
