@@ -6,19 +6,19 @@ namespace NXA.SC.Caas.Models
 {
     public class ApiTokenContext : DbContext
     {
-        private readonly IMediator _mediator;
+        private readonly IMediator mediator;
 
         public DbSet<ApiToken> Tokens { get; set; } = default!;
 
         public ApiTokenContext(IMediator mediator)
         {
-            _mediator = mediator;
+            this.mediator = mediator;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             var command = new GetConnStrCommand();
-            var connStr= _mediator.Send(command).Result;
+            var connStr = mediator.Send(command).Result;
 
             if (connStr != null)
             {

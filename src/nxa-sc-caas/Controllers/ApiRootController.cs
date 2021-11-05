@@ -10,16 +10,16 @@ namespace NXA.SC.Caas.Controllers
     [Authorize(AuthenticationSchemes = TokenAuthOptions.DefaultScemeName)]
     [Route("")]
     public class ApiRootController : ControllerBase {
-        private readonly ILogger<ApiRootController> _logger;
+        private readonly ILogger<ApiRootController> logger;
 
         public ApiRootController(ILogger<ApiRootController> logger) {
-            _logger = logger;
+            this.logger = logger;
         }
 
         [HttpGet]
         public Object Get() {
             var request = HttpContext.Request;
-            _logger.LogTrace($"{request.Method} {request.Path}");
+            logger.LogTrace($"{request.Method} {request.Path}");
             
             return new { };
         }

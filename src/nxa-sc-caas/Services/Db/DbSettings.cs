@@ -14,7 +14,8 @@ namespace NXA.SC.Caas.Services.Db
         public string? DbUser => Environment.GetEnvironmentVariable("API_DB_USER");
         public string? DbPass => Environment.GetEnvironmentVariable("API_DB_PASS");
 
-        public DbSettings(ILogger<DbSettings> logger) {
+        public DbSettings(ILogger<DbSettings> logger)
+        {
             this.logger = logger;
         }
 

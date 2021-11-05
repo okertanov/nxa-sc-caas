@@ -6,7 +6,8 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NXA.SC.Caas.Models;
 
-namespace NXA.SC.Caas.Services.Token {
+namespace NXA.SC.Caas.Services.Token
+{
     public class TokenService : ITokenService
     {
         private readonly ILogger<TokenService> logger;

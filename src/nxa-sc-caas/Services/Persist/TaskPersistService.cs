@@ -10,7 +10,8 @@ using static NXA.SC.Caas.Models.CompilerBackgroundService;
 
 namespace NXA.SC.Caas.Services.Persist.Impl
 {
-    public class TaskPersistService: ITaskPersistService {
+    public class TaskPersistService: ITaskPersistService
+	{
         private readonly ILogger<TaskPersistService> logger;
 		private readonly IMediator mediator;
 
@@ -23,7 +24,8 @@ namespace NXA.SC.Caas.Services.Persist.Impl
 			this.mediator = mediator;
         }
 
-        public Task<CompilerTask[]> GetAll(int? offset, int? limit) {
+        public Task<CompilerTask[]> GetAll(int? offset, int? limit)
+		{
             var command = new GetScheduledTasksCommand();
             var allTasks = mediator.Send(command);
             var result = allTasks.Result.Select(t => (CompilerTask)(t)).ToArray();
@@ -38,7 +40,8 @@ namespace NXA.SC.Caas.Services.Persist.Impl
             return Task.FromResult(result);
         }
 
-        public Task<CompilerTask> Store(CreateCompilerTask task, bool asyncCompilation) {
+        public Task<CompilerTask> Store(CreateCompilerTask task, bool asyncCompilation)
+		{
             logger.LogDebug($"Storing: {task.ContractName}...");
 
             var result = new CompilerTask(Guid.NewGuid().ToString(), CompilerTaskStatus.SCHEDULED, task, null, null);

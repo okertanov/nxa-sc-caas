@@ -8,6 +8,7 @@ namespace NXA.SC.Caas.Models {
         public string Compiler { get; set; } = String.Empty;
         public string Flamework { get; set; } = String.Empty;
         public string Abi { get; set; } = String.Empty;
+        
         public ServiceVersion() 
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
