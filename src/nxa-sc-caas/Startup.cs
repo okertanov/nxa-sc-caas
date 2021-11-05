@@ -81,8 +81,8 @@ namespace NXA.SC.Caas
             {
                 var exception = context.Features.Get<IExceptionHandlerPathFeature>().Error;
                 var lf = app.ApplicationServices.GetService<ILoggerFactory>();
-                var logger = lf!.CreateLogger("exceptionHandlerLogger");
-                logger.LogDebug(exception.StackTrace);
+                var logger = lf?.CreateLogger("exceptionHandlerLogger");
+                logger?.LogDebug(exception.StackTrace);
                 await context.Response.WriteAsJsonAsync(exception.Message);
             }));
             app.UseRouting();
@@ -98,8 +98,9 @@ namespace NXA.SC.Caas
             app.UseSpaStaticFiles();
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "./CodeEditor";
+                spa.Options.SourcePath = "./CodeEditor/dist";
                 spa.Options.DefaultPage = new PathString("/code-editor.html");
+                // TODO: NPM is turned off ATM
                 if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");

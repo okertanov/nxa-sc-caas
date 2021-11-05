@@ -1,17 +1,15 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using System.Text.Encodings.Web;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
 using NXA.SC.Caas.Services.Token;
 using System.Security.Principal;
 using MediatR;
 
-namespace NXA.SC.Caas.Models {
+namespace NXA.SC.Caas.Models
+{
     public class TokenAuthOptions : AuthenticationSchemeOptions
     {
         public const string DefaultScemeName = "TokenAuthScheme";
@@ -19,17 +17,24 @@ namespace NXA.SC.Caas.Models {
 
     public class ApiTokenHandler : AuthenticationHandler<TokenAuthOptions>
     {
-        private readonly IMediator _mediator;
-        public ApiTokenHandler(IOptionsMonitor<TokenAuthOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IMediator mediator)
-    : base(options, logger, encoder, clock)
+        private readonly IMediator mediator;
+        
+        public ApiTokenHandler(
+            IOptionsMonitor<TokenAuthOptions> options,
+            ILoggerFactory logger,
+            UrlEncoder encoder,
+            ISystemClock clock,
+            IMediator mediator
+        ) : base(options, logger, encoder, clock)
         {
-            _mediator = mediator;
+            this.mediator = mediator;
         }
+
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             var token = Request.Headers["Token"].ToString();
             var command = new ValidateTokenCommand { Token = token };
-            var valid = _mediator.Send(command).Result;
+            var valid = mediator.Send(command).Result;
             if (valid)
             {
                 var identity = new GenericIdentity("id");

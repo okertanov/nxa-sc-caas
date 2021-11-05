@@ -1,33 +1,30 @@
-using System;
-using System.Runtime.Serialization;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
 using System.Threading;
-using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
-namespace NXA.SC.Caas.Models {
+namespace NXA.SC.Caas.Models
+{
     public abstract class HostedService : IHostedService
     {
-        private Task _executingTask;
-        private CancellationTokenSource _cts;
+        private Task executingTask = default!;
+        private CancellationTokenSource cts = default!;
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            _executingTask = ExecuteAsync(_cts.Token);
-            return _executingTask.IsCompleted ? _executingTask : Task.CompletedTask;
+            cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            executingTask = ExecuteAsync(cts.Token);
+            return executingTask.IsCompleted ? executingTask : Task.CompletedTask;
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            if (_executingTask == null)
+            if (executingTask == null)
             {
                 return;
             }
 
-            _cts.Cancel();
-            await Task.WhenAny(_executingTask, Task.Delay(-1, cancellationToken));
+            cts.Cancel();
+            await Task.WhenAny(executingTask, Task.Delay(-1, cancellationToken));
 
             cancellationToken.ThrowIfCancellationRequested();
         }

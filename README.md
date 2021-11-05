@@ -4,62 +4,28 @@ NXA Smart Contract compiler as a service
 To build and launch
 -------------------
 
-    make clean build
+    make clean distclean
+    make build
     make start-dev
 
-    make docker-clean docker-build
-    make docker-test
+    make clean distclean
+    make docker-build
     make docker-start-dev
-
-
-To deploy
----------
-
-    make docker-clean docker-build
-    make deploy-neo-nft
-    or
-    make deploy-nxa-nft
+        or for PROD
+    make docker-start
 
 
 TODO
 ----
-[ ] Persistence layer  
-[ ] Bearer Auth  
-[ ] Dockerize it  
-[ ] NEO Compiler to test  
-[ ] Background task worker  
+[x] Persistence layer  
+[x] Bearer Auth  
+[x] Dockerize it  
+[x] NEO Compiler to test  
+[x] Background task worker  
 [ ] WS or other RT notify transport  
-
-Useful commands
----------------
-
-### Docker
-
-    docker ps
-    docker logs -f <hash>
-    docker exec -it <hash> /bin/bash
-
-### Docker Compose
-
-    docker compose up -d
-    docker compose down
-
-### Linux
-
-    ps
-    pwd
-    env
-    ls
-    ls -l
-    ll
-
-### GIT
-
-    git status
-    git checkout -b <branch-name>
-
 
 
 Links
 -----
+[https://andit.atlassian.net/wiki/spaces/NXA/pages/490995782/Smart+Contract+compiler+as+a+service+Server](https://andit.atlassian.net/wiki/spaces/NXA/pages/490995782/Smart+Contract+compiler+as+a+service+Server)  
 [https://github.com/neo-project/neo-devpack-dotnet](https://github.com/neo-project/neo-devpack-dotnet)  

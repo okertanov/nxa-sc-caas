@@ -2,7 +2,8 @@ using System;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations;
 
-namespace NXA.SC.Caas.Models {
+namespace NXA.SC.Caas.Models
+{
     public sealed class CompilerTask : IScheduledTask
     {
         [Required]
@@ -22,7 +23,8 @@ namespace NXA.SC.Caas.Models {
         [DataMember]
         public CompilerError? Error { get; private set; } = null;
 
-        public CompilerTask(): this(String.Empty, CompilerTaskStatus.CREATED, null, null, null) { 
+        public CompilerTask(): this(String.Empty, CompilerTaskStatus.CREATED, null, null, null)
+        { 
         }
 
         public CompilerTask(

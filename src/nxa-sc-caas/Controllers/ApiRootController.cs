@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NXA.SC.Caas.Models;
 
-namespace NXA.SC.Caas.Controllers {
+namespace NXA.SC.Caas.Controllers
+{
     [ApiController]
     [Authorize(AuthenticationSchemes = TokenAuthOptions.DefaultScemeName)]
     [Route("")]

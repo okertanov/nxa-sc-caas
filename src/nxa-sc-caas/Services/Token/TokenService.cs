@@ -1,45 +1,44 @@
 using System;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NXA.SC.Caas.Models;
 
 namespace NXA.SC.Caas.Services.Token {
     public class TokenService : ITokenService
     {
-        private readonly ILogger<TokenService> _logger;
-        private readonly ApiTokenContext _context;
+        private readonly ILogger<TokenService> logger;
+        private readonly ApiTokenContext context;
 
         public TokenService(ILogger<TokenService> logger, ApiTokenContext context) {
-            _logger = logger;
-            _context = context;
+            this.logger = logger;
+            this.context = context;
         }
+
         public bool TokenIsValid(string token)
         {
-            bool tokenActive = false;
-            bool tokenNotExpired = false;
-            bool valid = false;
+            var tokenActive = false;
+            var tokenNotExpired = false;
+            var valid = false;
 
-            if (!_context.Database.CanConnect())
+            if (!context.Database.CanConnect())
             {
-                _logger.LogError("Cannot connect to the db!");
+                logger.LogError("Cannot connect to the db!");
                 return valid;
             }
-            var tokenCount = _context.Tokens.Count();
+            var tokenCount = context.Tokens.Count();
 
             if (tokenCount == 0)
             {
-                _logger.LogError("No tokens found in db!");
+                logger.LogError("No tokens found in db!");
                 return valid;
             }
 
-            _logger.LogInformation($"Total tokens found in in db: {tokenCount}");
-            var tokenInDb = _context.Tokens.SingleOrDefault(t => t.Token == token);
-            bool tokenExistsInDb = tokenInDb != null;
+            logger.LogInformation($"Total tokens found in in db: {tokenCount}");
+            var tokenInDb = context.Tokens.SingleOrDefault(t => t.Token == token);
+            var tokenExistsInDb = tokenInDb != null;
 
             if (tokenExistsInDb)
             {
@@ -48,7 +47,7 @@ namespace NXA.SC.Caas.Services.Token {
             }
 
             valid = tokenExistsInDb && tokenActive && tokenNotExpired;
-            _logger.LogInformation($"{(tokenInDb ?? new ApiToken()).Token} : " +
+            logger.LogInformation($"{(tokenInDb ?? new ApiToken()).Token} : " +
                 $"Token exists in db = {tokenExistsInDb};" +
                 $"Token is active = {tokenActive};" +
                 $"Token is not expired = {tokenNotExpired}");
@@ -56,20 +55,25 @@ namespace NXA.SC.Caas.Services.Token {
             return valid;
         }
     }
-    public class ValidateTokenCommand : IRequest<bool>
+
+    public struct ValidateTokenCommand : IRequest<bool>
     {
-        public string Token { get; set; } = string.Empty;
+        public string Token { get; set; }
     }
+
     public class TokenServiceCommandHandler : IRequestHandler<ValidateTokenCommand, bool>
     {
-        private readonly ITokenService _tokenService;
+        private readonly ITokenService tokenService;
+        
         public TokenServiceCommandHandler(ITokenService tokenService)
         {
-            _tokenService = tokenService;
+            this.tokenService = tokenService;
         }
-        public async Task<bool> Handle(ValidateTokenCommand request, CancellationToken cancellationToken)
+
+        public Task<bool> Handle(ValidateTokenCommand request, CancellationToken cancellationToken)
         {
-            return _tokenService.TokenIsValid(request.Token);
+            var isTokenValid = tokenService.TokenIsValid(request.Token);
+            return Task.FromResult(isTokenValid);
         }
     }
 }
