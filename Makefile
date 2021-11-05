@@ -8,10 +8,11 @@ build:
 	make -C src/nxa-sc-caas $@
 
 test:
-	make -C src/nxa-sc-caas $@
+	make -C src/nxa-sc-caas.UnitTests $@
 
 clean:
 	make -C src/nxa-sc-caas $@
+	make -C src/nxa-sc-caas.UnitTests $@
 
 start-dev:
 	make -C src/nxa-sc-caas $@

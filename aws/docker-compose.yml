@@ -17,8 +17,6 @@ services:
       - caas_net
     ports:
       - 5500:5500
-    volumes:
-      - caas-data:/caas-data
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -71,7 +69,6 @@ networks:
     external: false
 
 volumes:
-  caas-data:
   caas-database-data:
 
 secrets:

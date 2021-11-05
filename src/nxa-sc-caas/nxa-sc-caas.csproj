@@ -60,7 +60,7 @@
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
   </Target>
 
-  <Target Name="EnsureNodeBuild" AfterTargets="EnsureNodeNpm">
+  <Target Name="EnsureNodeBuild" AfterTargets="EnsureNodeNpm" Condition="!Exists('$(SpaRoot)\dist')">
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
   </Target>
 
