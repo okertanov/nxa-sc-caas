@@ -9,120 +9,136 @@ using NXA.SC.Caas.Services.Compiler.Impl;
 using NXA.SC.Caas.Services.Persist.Impl;
 using Microsoft.Extensions.Logging;
 
-namespace NXA.SC.Caas.Models {
+namespace NXA.SC.Caas.Models
+{
     public class CompilerBackgroundService : HostedService
     {
-        private static List<IScheduledTask> _allTasks = new List<IScheduledTask>();
-        public IServiceProvider _serviceProvider;
+        private static List<IScheduledTask> allTasks = new List<IScheduledTask>();
+        public IServiceProvider serviceProvider;
+
         public CompilerBackgroundService(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            this.serviceProvider = serviceProvider;
         }
+
         public static IScheduledTask AddTask(IScheduledTask task)
         {
-            _allTasks.Add(task);
+            allTasks.Add(task);
             return task;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public struct GetScheduledTasksCommand : IRequest<List<IScheduledTask>>
         {
-            _ = Task.Run(async () => await BackgroundProcessing(stoppingToken));
         }
+
+        public class GetScheduledTasksCommandHandler : IRequestHandler<GetScheduledTasksCommand, List<IScheduledTask>>
+        {
+            public Task<List<IScheduledTask>> Handle(GetScheduledTasksCommand request, CancellationToken cancellationToken)
+            {
+                return Task.FromResult(allTasks);
+            }
+        }
+
+        public struct AddScheduledTaskCommand : IRequest<IScheduledTask>
+        {
+            public IScheduledTask Task { get; set; }
+        }
+
+        public class AddScheduledTaskCommandHandler : IRequestHandler<AddScheduledTaskCommand, IScheduledTask>
+        {
+            public Task<IScheduledTask> Handle(AddScheduledTaskCommand request, CancellationToken cancellationToken)
+            {
+                var task = AddTask(request.Task);
+                return Task.FromResult(task);
+            }
+        }
+
+        public struct UpdateScheduledTaskCommand : IRequest<IScheduledTask>
+        {
+            public IScheduledTask Task { get; set; }
+        }
+
+        public class UpdateScheduledTaskCommandHandler : IRequestHandler<UpdateScheduledTaskCommand, IScheduledTask>
+        {
+            public Task<IScheduledTask> Handle(UpdateScheduledTaskCommand request, CancellationToken cancellationToken)
+            {
+                var task = UpdateTask(request.Task);
+                return Task.FromResult(task);
+            }
+        }
+
+        public struct RemoveScheduledTaskCommand : IRequest<string>
+        {
+            public string Identifier { get; set; }
+        }
+
+        public class RemoveScheduledTaskCommandHandler : IRequestHandler<RemoveScheduledTaskCommand, string>
+        {
+            public Task<string> Handle(RemoveScheduledTaskCommand request, CancellationToken cancellationToken)
+            {
+                var task = RemoveTask(request.Identifier);
+                return Task.FromResult(task);
+            }
+        }
+
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            return Task.Run(async () => await BackgroundProcessing(stoppingToken));
+        }
+
         private async Task BackgroundProcessing(CancellationToken cancellationToken)
         {
+            var scope = serviceProvider.CreateScope();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<CompilerBackgroundService>>();
+            var taskFactory = new TaskFactory(TaskScheduler.Current);
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
             var tasksRun = new List<Task>();
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                var taskFactory = new TaskFactory(TaskScheduler.Current);
-
-                using var scope = _serviceProvider.CreateScope();
-                var _logger =
-                scope.ServiceProvider
-                    .GetRequiredService<ILogger<CompilerBackgroundService>>();
-
-                if (_allTasks.Count == 0)
+                if (allTasks.Count == 0)
                     continue;
 
-                var tasksThatShouldRun = _allTasks.FindAll(t => t.Status == CompilerTaskStatus.SCHEDULED);
+                var tasksThatShouldRun = allTasks.FindAll(t => t.Status == CompilerTaskStatus.SCHEDULED);
 
                 foreach (var taskThatShouldRun in tasksThatShouldRun)
                 {
-                    tasksRun.Add(taskFactory.StartNew(
-                    async () =>
-                    {
-                        _logger.LogInformation($"Processing task id: {taskThatShouldRun.Identifier}");
-                        var _mediator =
-                            scope.ServiceProvider
-                                .GetRequiredService<IMediator>();
+                    tasksRun.Add(
+                        taskFactory.StartNew(
+                            async () =>
+                            {
+                                logger.LogInformation($"Processing task id: {taskThatShouldRun.Identifier}");
 
-                        var compileCommand = new CompileCommand { Task = taskThatShouldRun as CompilerTask };
-                        var compiled = await _mediator.Send(compileCommand);
+                                var compileCommand = new CompileCommand { Task = (taskThatShouldRun as CompilerTask)! };
+                                var compiled = await mediator.Send(compileCommand);
 
-                        var updateCommand = new UpdateTasksCommand { Task = compiled };
-                        var updated = await _mediator.Send(updateCommand);
-                        _logger.LogInformation($"Task {taskThatShouldRun.Identifier} finished");
-                    },
-                    cancellationToken));
+                                var updateCommand = new UpdateTasksCommand { Task = compiled };
+                                var updated = await mediator.Send(updateCommand);
+                                
+                                logger.LogInformation($"Task {taskThatShouldRun.Identifier} finished");
+                            },
+                        cancellationToken)
+                    );
                 }
 
                 await Task.WhenAll(tasksRun);
+
+                // TODO: Introduce delay to not stress by 'FindAll'
             }
         }
+
         private static IScheduledTask UpdateTask(IScheduledTask updatedTask)
         {
             RemoveTask(updatedTask.Identifier);
-            _allTasks.Add(updatedTask);
-
-            return _allTasks.Single(t => t.Identifier == updatedTask.Identifier);
+            allTasks.Add(updatedTask);
+            return allTasks.Single(t => t.Identifier == updatedTask.Identifier);
         }
 
         private static string RemoveTask(string identifier)
         {
-            _allTasks.
-                RemoveAll(t => t.Identifier == identifier);
-
+            allTasks.RemoveAll(t => t.Identifier == identifier);
             return identifier;
-        }
-        public class GetScheduledTasksCommand : IRequest<List<IScheduledTask>> { }
-        public class GetScheduledTasksCommandHandler : IRequestHandler<GetScheduledTasksCommand, List<IScheduledTask>>
-        {
-            public async Task<List<IScheduledTask>> Handle(GetScheduledTasksCommand request, CancellationToken cancellationToken)
-            {
-                return _allTasks;
-            }
-        }
-        public class AddScheduledTaskCommand : IRequest<IScheduledTask> {
-            public IScheduledTask Task { get; set; }
-        }
-        public class AddScheduledTaskCommandHandler : IRequestHandler<AddScheduledTaskCommand, IScheduledTask>
-        {
-            public async Task<IScheduledTask> Handle(AddScheduledTaskCommand request, CancellationToken cancellationToken)
-            {
-                return AddTask(request.Task);
-            }
-        }
-        public class UpdateScheduledTaskCommand : IRequest<IScheduledTask>
-        {
-            public IScheduledTask Task { get; set; }
-        }
-        public class UpdateScheduledTaskCommandHandler : IRequestHandler<UpdateScheduledTaskCommand, IScheduledTask>
-        {
-            public async Task<IScheduledTask> Handle(UpdateScheduledTaskCommand request, CancellationToken cancellationToken)
-            {
-                return UpdateTask(request.Task);
-            }
-        }
-        public class RemoveScheduledTaskCommand : IRequest<string>
-        {
-            public string Identifier { get; set; } = string.Empty;
-        }
-        public class RemoveScheduledTaskCommandHandler : IRequestHandler<RemoveScheduledTaskCommand, string>
-        {
-            public async Task<string> Handle(RemoveScheduledTaskCommand request, CancellationToken cancellationToken)
-            {
-                return RemoveTask(request.Identifier);
-            }
         }
     }
 }

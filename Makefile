@@ -1,4 +1,5 @@
 DOCKER_COMPOSE_FILE=docker-compose.yml
+DOCKER_COMPOSE_DEV_FILE=docker-compose.dev.yml
 
 all:
 	make -C src/nxa-sc-caas $@
@@ -6,29 +7,29 @@ all:
 build:
 	make -C src/nxa-sc-caas $@
 
-restore:
-	make -C src/nxa-sc-caas $@
-
-align-project:
+test:
 	make -C src/nxa-sc-caas $@
 
 clean:
 	make -C src/nxa-sc-caas $@
 
-client-build:
-	make -C src/nxa-sc-caas $@
-
 start-dev:
 	make -C src/nxa-sc-caas $@
 
-start-prod:
+start:
 	make -C src/nxa-sc-caas $@
 
 docker-build:
-	docker-compose -f ${DOCKER_COMPOSE_FILE} build --parallel
+	docker-compose -f ${DOCKER_COMPOSE_FILE} -f ${DOCKER_COMPOSE_DEV_FILE} build --parallel
+
+docker-start-dev:
+	docker-compose -f ${DOCKER_COMPOSE_FILE} -f ${DOCKER_COMPOSE_DEV_FILE} up -d
+
+docker-start:
+	docker-compose -f ${DOCKER_COMPOSE_FILE} up -d
 
 docker-rebuild:
-	docker-compose -f ${DOCKER_COMPOSE_FILE} build --parallel --no-cache --force-rm --pull
+	docker-compose -f ${DOCKER_COMPOSE_FILE} -f ${DOCKER_COMPOSE_DEV_FILE} build --parallel --no-cache --force-rm --pull
 
 docker-stop:
 	docker-compose -f ${DOCKER_COMPOSE_FILE} down --remove-orphans
@@ -36,9 +37,9 @@ docker-stop:
 docker-clean:
 	docker-compose -f ${DOCKER_COMPOSE_FILE} rm -s -f -v
 
-.PHONY: all build restore align-project clean\
-			docker-build docker-rebuild docker-stop\
-			docker-clean
+distclean: clean docker-clean
 
-.SILENT: clean docker-clean
+.PHONY: all build test clean start-dev start distclean\
+		docker-build docker-rebuild docker-start-dev docker-start docker-stop docker-clean
 
+.SILENT: clean docker-clean distclean

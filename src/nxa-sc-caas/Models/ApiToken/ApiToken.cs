@@ -1,6 +1,7 @@
 using System;
 
-namespace NXA.SC.Caas.Models {
+namespace NXA.SC.Caas.Models
+{
     public sealed class ApiToken
     {
         public int Id { get; set; }

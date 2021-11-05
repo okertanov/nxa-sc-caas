@@ -1,48 +1,65 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { MonacoEditorComponent } from './monaco-editor/monaco-editor.component';
 import { environment } from './../environments/environment';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  private headers: HttpHeaders;
-
-  private readonly url=`${window.location.origin}/api/Compiler`;
-  constructor(private readonly http: HttpClient) {}
-  initCode = `
+  private static readonly initCodeDefault = `
+    //
     // Type smart contract code here...
-  `;
-  resultCode=`
-    // Compile result will be shown here
+    //
   `;
 
-  public compileCode(): void {
-    var token= environment.token;
-    this.headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Token': token});
-    var createCompilerTask:any = 
-    {
-      systemOwnerAddress: (document.getElementById("systemOwnerAddress") as HTMLInputElement).value,
-      contractAuthorAddress: (document.getElementById("contractAuthorAddress") as HTMLInputElement).value,
-      contractAuthorName: (document.getElementById("contractAuthorName") as HTMLInputElement).value,
-      contractAuthorEmail: (document.getElementById("contractAuthorEmail") as HTMLInputElement).value,
-      contractName: (document.getElementById("contractName") as HTMLInputElement).value,
-      contractDescription: (document.getElementById("contractDescription") as HTMLInputElement).value,
-      contractSymbol: (document.getElementById("contractSymbol") as HTMLInputElement).value,
-      contractInitialCoins: (document.getElementById("contractInitialCoins") as HTMLInputElement).value,
-      contractDecimals: (document.getElementById("contractDecimals") as HTMLInputElement).value,
-      contractSource: this.initCode
-    };
-    console.log(`compiling code -> ${this.initCode}`);
-    
-    this.http.put(this.url, createCompilerTask, { headers: this.headers })
-    .subscribe(resp=> this.resultCode = JSON.stringify(resp, null, 2));
+  private static readonly resultCodeDefault = `
+    //
+    // Compile results
+    //
+  `;
+
+  public initCode = AppComponent.initCodeDefault;
+  public resultCode = AppComponent.resultCodeDefault;
+
+  constructor(private readonly httpClient: HttpClient) {
   }
 
-  clearCode(): void {
-    console.log('clearing the code');
-    this.initCode = '';
+  public async compileCode(event: any): Promise<void> {
+    const apiUrl = `${window.location.origin}/api/Compiler`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Token': environment.token
+    });
+
+    const createCompilerTask: { [key: string]: string } = {
+      systemOwnerAddress: (document.getElementById('systemOwnerAddress') as HTMLInputElement).value,
+      contractAuthorAddress: (document.getElementById('contractAuthorAddress') as HTMLInputElement).value,
+      contractAuthorName: (document.getElementById('contractAuthorName') as HTMLInputElement).value,
+      contractAuthorEmail: (document.getElementById('contractAuthorEmail') as HTMLInputElement).value,
+      contractName: (document.getElementById('contractName') as HTMLInputElement).value,
+      contractDescription: (document.getElementById('contractDescription') as HTMLInputElement).value,
+      contractSymbol: (document.getElementById('contractSymbol') as HTMLInputElement).value,
+      contractInitialCoins: (document.getElementById('contractInitialCoins') as HTMLInputElement).value,
+      contractDecimals: (document.getElementById('contractDecimals') as HTMLInputElement).value,
+      contractSource: this.initCode
+    };
+    console.log(`compiling code -> ${this.initCode} with: ${JSON.stringify(createCompilerTask)}`);
+
+    event.target.disabled = true;
+
+    try {
+      const resp = await this.httpClient.put(apiUrl, createCompilerTask, { headers: headers }).toPromise();
+      this.resultCode = JSON.stringify(resp, null, 2);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      event.target.disabled = false;
+    }
+  }
+
+  public clearCode(event: any): void {
+    this.resultCode = AppComponent.resultCodeDefault;
   }
 }

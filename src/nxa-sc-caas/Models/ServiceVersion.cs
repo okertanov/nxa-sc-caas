@@ -1,6 +1,4 @@
 using System;
-using System.Runtime.Serialization;
-using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 namespace NXA.SC.Caas.Models {
@@ -19,18 +17,22 @@ namespace NXA.SC.Caas.Models {
             Abi = assembly.GetCustomAttribute<AbiVersionAttribute>()!.Version;
         }
     }
+
     public sealed class ApiVersionAttribute : Attribute
     {
         public string Version = String.Empty;
     }
+
     public sealed class CompilerVersionAttribute : Attribute
     {
         public string Version = String.Empty;
     }
+
     public sealed class FlameworkVersionAttribute : Attribute
     {
         public string Version = String.Empty;
     }
+
     public sealed class AbiVersionAttribute : Attribute
     {
         public string Version = String.Empty;

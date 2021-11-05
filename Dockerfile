@@ -1,3 +1,6 @@
+#
+# Builder
+#
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS builder
 
 ENV GITLAB_TOKEN=gitlab-ci-token:wC6cFZiaKt64xxzo39nf
@@ -16,9 +19,12 @@ ENV NEO_DEVPACK_DIR=neo-devpack-dotnet
 ENV NXA_SC_CAAS_REPO=https://${GITLAB_TOKEN}@gitlab.teamxi.cloud/nxa/neo-frontier-launchpad-2021/nxa-sc-caas.git
 ENV NXA_SC_CAAS_DIR=nxa-sc-caas-dir
 
+# Node dpkg source repo
 RUN curl --silent --location https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get update && apt-get install -y \
-build-essential  \
+
+# System deb packages
+RUN apt update && apt install -y \
+    build-essential  \
     git \
     zip \
     nodejs
@@ -50,22 +56,21 @@ WORKDIR /${NXA_SC_CAAS_DIR}
 RUN git checkout master
 RUN make
 
-# RUN
+#
+# Run
+#
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS run
 
 ENV NXA_SC_CAAS_DIR=nxa-sc-caas-dir
 
 RUN curl --silent --location https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
     build-essential \
     procps\
     nodejs
 
-WORKDIR /${NXA_SC_CAAS_DIR}
+WORKDIR /app-root/caas
 
 COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas/dist ./
-COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas/CodeEditor ./CodeEditor
-
-VOLUME /caas-data
 
 ENTRYPOINT ["dotnet","nxa-sc-caas.dll"]

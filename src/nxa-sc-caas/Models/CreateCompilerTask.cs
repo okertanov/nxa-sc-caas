@@ -2,9 +2,11 @@ using System;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations;
 
-namespace NXA.SC.Caas.Models {
+namespace NXA.SC.Caas.Models
+{
     [DataContract]
-    public sealed class CreateCompilerTask {
+    public sealed class CreateCompilerTask
+    {
         [Required]
         [DataMember]
         public string SystemOwnerAddress { get; set; } = String.Empty;

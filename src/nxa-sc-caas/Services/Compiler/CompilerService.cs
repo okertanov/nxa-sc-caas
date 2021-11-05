@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,26 +10,28 @@ using Neo.IO;
 using MediatR;
 using System.Threading;
 using System.Diagnostics;
-using System.ComponentModel;
 
-namespace NXA.SC.Caas.Services.Compiler.Impl {
+namespace NXA.SC.Caas.Services.Compiler.Impl
+{
     public class CompilerService : ICompilerService
     {
-        private readonly ILogger<CompilerService> _logger;
+        private readonly ILogger<CompilerService> logger;
 
         public CompilerService(ILogger<CompilerService> logger)
         {
-            _logger = logger;
+            this.logger = logger;
         }
 
         public Task<CompilerTask> Compile(CompilerTask task)
         {
-            _logger.LogDebug($"Compiling: {task.Create?.ContractName}...");
-            CompilerTask resultTask = task;
+            logger.LogDebug($"Compiling: {task.Create?.ContractName}...");
+            
+            var resultTask = task;
             var neoRes = new Neo.Compiler.CompileResult();
             var sourceStr = task.Create!.ContractSource;
             var sourceStrNormalized = sourceStr.IsBase64String() ? Encoding.UTF8.GetString(Convert.FromBase64String(sourceStr)) : sourceStr;
             var template = Handlebars.Compile(sourceStrNormalized);
+            
             var data = new
             {
                 SystemOwnerAddress = task.Create.SystemOwnerAddress,
@@ -52,15 +53,17 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
             }
             catch (Exception ex)
             {
-                _logger.LogDebug(ex.StackTrace);
+                logger.LogError(ex.StackTrace);
 
                 var stackTrace = new StackTrace(ex, true);
-                var line = stackTrace!.GetFrame(0).GetFileLineNumber();
+                var line = stackTrace?.GetFrame(0)?.GetFileLineNumber() ?? 0;
                 var compilerError = new CompilerError(task.Create.ContractName, (uint)line, ex.HResult.ToString(), ex.Message, ex.StackTrace);
                 resultTask = task.SetError(compilerError);
                 return Task.FromResult(resultTask);
             }
+
             var neoErrors = neoRes.Diagnostics.Where(d => d.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToList();
+            
             if (neoErrors.Count() > 0)
             {
                 var firstError = neoErrors.First();
@@ -77,6 +80,7 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
             return Task.FromResult(resultTask);
         }
     }
+
     public class CompileCommandHandler : IRequestHandler<CompileCommand, CompilerTask>
     {
         private readonly ICompilerService _compilerService;
@@ -90,7 +94,8 @@ namespace NXA.SC.Caas.Services.Compiler.Impl {
             return _compilerService.Compile(request.Task);
         }
     }
-    public class CompileCommand : IRequest<CompilerTask>
+
+    public struct CompileCommand : IRequest<CompilerTask>
     {
         public CompilerTask Task { get; set; }
     }

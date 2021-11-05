@@ -7,6 +7,6 @@ namespace NXA.SC.Caas.Services.Persist {
         Task<CompilerTask?> GetByIdentifier(string identifier);
         Task<CompilerTask> Store(CreateCompilerTask task, bool asyncCompilation);
         Task<CompilerTask> Update(CompilerTask task, bool asyncCompilation);
-        Task<CompilerTask?> DeleteByIdentifier(string identifier);
+        Task<CompilerTask> DeleteByIdentifier(string identifier);
     }
 }

@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+
+  nxa-sc-caas:
+    build:
+      dockerfile: Dockerfile
+      target: run
+      context: .
+    volumes:
+      - ..:/app-root
+      - .:/app-root/caas
+    entrypoint: ["make","start-dev"]

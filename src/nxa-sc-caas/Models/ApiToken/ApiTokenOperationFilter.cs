@@ -10,7 +10,9 @@ namespace NXA.SC.Caas.Models
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var allowAnonymous = context.ApiDescription.CustomAttributes().Any(attr => attr.GetType() == typeof(AllowAnonymousAttribute));
+            var allowAnonymous = context.ApiDescription
+                .CustomAttributes()
+                .Any(attr => attr.GetType() == typeof(AllowAnonymousAttribute));
 
             if (!allowAnonymous)
             {

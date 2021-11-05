@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,62 +9,69 @@ using MediatR;
 using NXA.SC.Caas.Services.Persist.Impl;
 using NXA.SC.Caas.Services.Compiler.Impl;
 
-namespace NXA.SC.Caas.Controllers {
+namespace NXA.SC.Caas.Controllers
+{
     [ApiController]
     [Authorize(AuthenticationSchemes = TokenAuthOptions.DefaultScemeName)]
     [Route("[controller]")]
-    public class CompilerController : ControllerBase {
-        private readonly ILogger<CompilerController> _logger;
-        private readonly IMediator _mediator;
+    public class CompilerController : ControllerBase
+    {
+        private readonly ILogger<CompilerController> logger;
+        private readonly IMediator mediator;
 
-        public CompilerController(IMediator mediator,
+        public CompilerController(
+            IMediator mediator,
             ILogger<CompilerController> logger
-            ) {
-            _mediator = mediator;
-            _logger = logger;
+        )
+        {
+            this.mediator = mediator;
+            this.logger = logger;
         }
 
         [HttpGet]
         public async Task<IEnumerable<CompilerTask>> Get(
             [FromQuery(Name = "offset")] int? offset,
             [FromQuery(Name = "limit")] int? limit
-        ) {
+        )
+        {
             var request = HttpContext.Request;
-            _logger.LogTrace($"{request.Method} {request.Path}");
+            logger.LogTrace($"{request.Method} {request.Path}");
 
             var command = new GetAllTasksCommand { Offset = offset, Limit = limit };
-            var result = await _mediator.Send(command);
+            var result = await mediator.Send(command);
             return result;
         }
 
         [HttpGet("{identifier}")]
-        public async Task<CompilerTask> GetByIdentifier(string identifier) {
+        public async Task<CompilerTask> GetByIdentifier(string identifier)
+        {
             var request = HttpContext.Request;
-            _logger.LogTrace($"{request.Method} {request.Path} - {identifier}");
+            logger.LogTrace($"{request.Method} {request.Path} - {identifier}");
 
             var command = new GetTasksByIdCommand { Identifier = identifier };
-            var result = await _mediator.Send(command);
+            var result = await mediator.Send(command);
             return result;
         }
 
         [HttpPut]
-        public async Task<CompilerTask> Put(CreateCompilerTask dto) {
+        public async Task<CompilerTask> Put(CreateCompilerTask dto)
+        {
             var request = HttpContext.Request;
             var asyncCompilation = request.Headers["AsynchronousCompilation"].ToString() == "true";
 
             var dtoStr = JsonSerializer.Serialize(dto);
-            _logger.LogTrace($"{request.Method} {request.Path} - {dtoStr}");
+            logger.LogTrace($"{request.Method} {request.Path} - {dtoStr}");
 
             var storeCommand = new StoreTasksCommand { Task = dto, AsyncCompilation = asyncCompilation};
-            var stored = await _mediator.Send(storeCommand);
+            var stored = await mediator.Send(storeCommand);
 
             if (!asyncCompilation)
             {
                 var compileCommand = new CompileCommand { Task = stored };
-                var compiled = await _mediator.Send(compileCommand);
+                var compiled = await mediator.Send(compileCommand);
 
                 var updateCommand = new UpdateTasksCommand { Task = compiled, AsyncCompilation = asyncCompilation };
-                var updated = await _mediator.Send(updateCommand);
+                var updated = await mediator.Send(updateCommand);
 
                 return updated;
             }
@@ -75,12 +80,13 @@ namespace NXA.SC.Caas.Controllers {
         }
 
         [HttpDelete("{identifier}")]
-        public async Task<CompilerTask> DeleteByIdentifier(string identifier) {
+        public async Task<CompilerTask> DeleteByIdentifier(string identifier)
+        {
             var request = HttpContext.Request;
-            _logger.LogTrace($"{request.Method} {request.Path} - {identifier}");
+            logger.LogTrace($"{request.Method} {request.Path} - {identifier}");
 
             var command = new DeleteTasksByIdCommand { Identifier = identifier };
-            var result = await _mediator.Send(command);
+            var result = await mediator.Send(command);
             return result;
         }
     }

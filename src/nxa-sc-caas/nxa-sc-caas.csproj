@@ -3,7 +3,11 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>nxa_sc_caas</RootNamespace>
     <Nullable>enable</Nullable>
+    <SpaRoot>CodeEditor</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)/node_modules/**</DefaultItemExcludes>
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="dotenv.net" Version="3.1.0" />
     <PackageReference Include="Handlebars.Net" Version="2.0.9" />
@@ -42,14 +46,34 @@
     <ProjectReference Include="..\..\..\neo-devpack-dotnet\src\Neo.Compiler.CSharp\Neo.Compiler.CSharp.csproj" />
     <ProjectReference Include="..\..\..\neo-devpack-dotnet\src\Neo.SmartContract.Framework\Neo.SmartContract.Framework.csproj" />
   </ItemGroup>
-  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('CodeEditor/node_modules') ">
-    <!-- Ensure Node.js is installed -->
-    <Exec Command="node --version" ContinueOnError="true">
-      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-    </Exec>
-    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
-    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
-    <Exec Command="npm install" WorkingDirectory="CodeEditor"></Exec>
-    <Exec Command="npm run build" WorkingDirectory="CodeEditor "></Exec>
+
+  <ItemGroup>
+    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+      <None Remove="$(SpaRoot)\**" />
+      <Content Remove="$(SpaRoot)\**" />
+      <Compile Remove="$(SpaRoot)\**" />
+      <EmbeddedResource Remove="$(SpaRoot)\**" />
+      <TypeScriptCompile Remove="$(SpaRoot)\**" />
+  </ItemGroup>
+
+  <Target Name="EnsureNodeNpm" AfterTargets="Build" Condition="!Exists('$(SpaRoot)\node_modules')">
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
   </Target>
+
+  <Target Name="EnsureNodeBuild" AfterTargets="EnsureNodeNpm">
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+  </Target>
+
+  <Target Name="PublishRunWebpack" AfterTargets="Build">
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)\dist\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+    
 </Project>

@@ -1,42 +1,45 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Net;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 using NXA.SC.Caas.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Threading.Tasks;
-using System.Net;
-using System;
-using Newtonsoft.Json;
 
-namespace NXA.SC.Caas.Controllers {
+namespace NXA.SC.Caas.Controllers
+{
     [ApiController]
     [AllowAnonymous]
     [Route("[controller]")]
     public class StatusController : ControllerBase 
     {
-        private readonly ILogger<StatusController> _logger;
-        private readonly HealthCheckService _healthCheckService; 
-        public static readonly DateTime StartupTime = DateTime.Now;
+        private readonly ILogger<StatusController> logger;
+        private readonly HealthCheckService healthCheckService; 
+        private readonly DateTime startupTime;
 
         public StatusController(
-            ILogger<StatusController> logger, HealthCheckService healthCheckService
+            ILogger<StatusController> logger,
+            HealthCheckService healthCheckService
         )
         {
-            _healthCheckService = healthCheckService;
-            _logger = logger;
+            this.healthCheckService = healthCheckService;
+            this.logger = logger;
+            this.startupTime = Process.GetCurrentProcess().StartTime;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetServiceStatus()
         {
             var request = HttpContext.Request;
-            _logger.LogTrace($"{request.Method} {request.Path}");
-            var report = await _healthCheckService.CheckHealthAsync();
-            _logger.LogInformation(report.Status.ToString());
+            logger.LogTrace($"{request.Method} {request.Path}");
 
-            var upTime = DateTime.Now - StartupTime;
-            var uptimeJson= JsonConvert.SerializeObject(upTime);
+            var report = await healthCheckService.CheckHealthAsync();
+            logger.LogInformation(report.Status.ToString());
+
+            var upTime = DateTime.Now - startupTime;
+            var uptimeJson = upTime.ToString();
 
             var result = new SystemStatus
             {
@@ -44,9 +47,11 @@ namespace NXA.SC.Caas.Controllers {
                 HealthInfo = report
             };
 
-            return report.Status == HealthStatus.Healthy ? Ok(result) :
-            StatusCode((int)HttpStatusCode.ServiceUnavailable, result);
-        }
+            var status = report.Status == HealthStatus.Healthy ?
+                Ok(result) :
+                StatusCode((int)HttpStatusCode.ServiceUnavailable, result);
 
+            return status;
+        }
     }
 }

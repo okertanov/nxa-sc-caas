@@ -2,8 +2,10 @@ using System;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations;
 
-namespace NXA.SC.Caas.Models {
-    public sealed class CompilerError {
+namespace NXA.SC.Caas.Models
+{
+    public sealed class CompilerError
+    {
         [Required]
         [DataMember]
         public string File { get; private set; } = String.Empty;
