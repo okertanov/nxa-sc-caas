@@ -185,7 +185,7 @@ namespace NXA.SC.Caas.Services.Persist.Impl
 
 		public Task<CompilerTask> Handle(DeleteTasksByIdCommand request, CancellationToken cancellationToken)
 		{
-			return this.taskPersistService.DeleteByIdentifier(request.Identifier);
+			return taskPersistService.DeleteByIdentifier(request.Identifier);
 		}
 	}
 }
