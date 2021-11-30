@@ -2,7 +2,7 @@
 all: test
 
 test: 
-	dotnet test --nologo --no-restore --verbosity normal
+	dotnet test
 
 clean: 
 	-@dotnet clean 2>&1 > /dev/null

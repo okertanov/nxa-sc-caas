@@ -43,6 +43,7 @@ namespace NXA.SC.Caas
             services.AddScoped<ICompilerService, CompilerService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IDbSettings, DbSettings>();
+            services.AddScoped<ITemplatePreprocessService, TemplatePreprocessService>();
             services.AddDbContext<ApiTokenContext>();
             services.AddAuthentication(TokenAuthOptions.DefaultScemeName)
                     .AddScheme<TokenAuthOptions, ApiTokenHandler>(TokenAuthOptions.DefaultScemeName, null);
