@@ -16,6 +16,7 @@ namespace NXA.SC.Caas.Controllers
     [ApiController]
     [Authorize(AuthenticationSchemes = TokenAuthOptions.DefaultScemeName)]
     [Route("[controller]")]
+    [TypeFilter(typeof(PreprocessExceptionFilter))]
     public class TemplatePreprocessController : ControllerBase 
     {
         private readonly ILogger<StatusController> logger;
@@ -44,7 +45,7 @@ namespace NXA.SC.Caas.Controllers
         }
 
         [HttpGet("TemplateSource")]
-        public object GetTemplateSource(string fileName)
+        public TemplateSource GetTemplateSource(string fileName)
         {
             var request = HttpContext.Request;
             logger.LogTrace($"{request.Method} {request.Path}");
@@ -53,7 +54,14 @@ namespace NXA.SC.Caas.Controllers
             var sourceString = System.IO.File.ReadAllText(sourceFilePath);
             var sourceStrBytes = Encoding.UTF8.GetBytes(sourceString);
             var sourceBase64 = Convert.ToBase64String(sourceStrBytes);
-            return new { sourceString, sourceBase64};
+            var preprocessCommand = new PreprocessTemplateCommand { SourceStr = sourceString, FileName = fileName };
+            var templateParams = mediator.Send(preprocessCommand);
+            var result = new TemplateSource { 
+                SourceString = sourceString,
+                SourceBase64 = sourceBase64,
+                TemplateParams = templateParams.Result
+            };
+            return result;
         }
 
         [HttpGet("TemplateInputParamsFromTemplate")]
