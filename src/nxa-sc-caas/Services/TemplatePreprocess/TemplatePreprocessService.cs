@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
@@ -29,10 +30,10 @@ namespace NXA.SC.Caas.Models
             var syntaxTree = CSharpSyntaxTree.ParseText(sourceStr);
             var root = syntaxTree.GetCompilationUnitRoot();
 
-            var namespaceDecl= root.Members.First() as NamespaceDeclarationSyntax;
+            var namespaceDecl= root.Members.FirstOrDefault() as NamespaceDeclarationSyntax;
             if(namespaceDecl == null) 
             {
-                throw new KeyNotFoundException("Invalid namespace declaration");
+                throw new TemplatePreprocessException("Invalid namespace declaration");
             }
 
             var namespaceMembers = namespaceDecl.Members;
@@ -40,7 +41,7 @@ namespace NXA.SC.Caas.Models
             logger.LogInformation($"Namespace - {namespaceName}");
             if (!namespaceMembers.Any(m => m.Kind() == SyntaxKind.ClassDeclaration))
             {
-                throw new KeyNotFoundException("No class declaration found");
+                throw new TemplatePreprocessException("No class declaration found");
             }
 
             var classDeclMembers = namespaceMembers.Where(m => m.Kind() == SyntaxKind.ClassDeclaration);
@@ -54,7 +55,7 @@ namespace NXA.SC.Caas.Models
             var classDecl = memberDecl as ClassDeclarationSyntax;
             if(classDecl == null)
             {
-                throw new KeyNotFoundException("Invalid class declaration");
+                throw new TemplatePreprocessException("Invalid class declaration");
             }
             var classAtr = classDecl.AttributeLists.Where(att => att.ToString().Contains("{{")).SelectMany(a => a.Attributes);
             var classMemb = classDecl.Members;
@@ -221,4 +222,8 @@ namespace NXA.SC.Caas.Models
         }
     }
 
+    public sealed class TemplatePreprocessException : SystemException
+    {
+        public TemplatePreprocessException(string? message) : base(message){ }
+    }
 }
