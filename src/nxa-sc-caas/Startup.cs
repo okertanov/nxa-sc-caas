@@ -40,7 +40,8 @@ namespace NXA.SC.Caas
         {
             services.AddControllers();
             services.AddScoped<ITaskPersistService, TaskPersistService>();
-            services.AddScoped<ICompilerService, CompilerService>();
+            services.AddScoped<ICompilerService, CSharpCompilerService>();
+            services.AddScoped<ICompilerService, SolidityCompilerService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IDbSettings, DbSettings>();
             services.AddScoped<ITemplatePreprocessService, TemplatePreprocessService>();

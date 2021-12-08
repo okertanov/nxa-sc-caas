@@ -2,6 +2,7 @@
 using NXA.SC.Caas.Extensions;
 using NXA.SC.Caas.Models;
 using NXA.SC.Caas.Services.Compiler.Impl;
+using System;
 
 namespace nxa_sc_caas.UnitTests
 {
@@ -49,7 +50,7 @@ namespace nxa_sc_caas.UnitTests
         [TestMethod]
         public void Test_CompileError()
         {
-            var compilerService = CompilerFactory.CreateCompilerService();
+            var compilerService = CompilerFactory.CreateCompilerServiceCSharp();
             var task = CompilerFactory.GetInvalidSmartContractTask();
             var result = compilerService.Compile(task);
             Assert.IsNotNull(result.Result.Error);
@@ -58,11 +59,19 @@ namespace nxa_sc_caas.UnitTests
         [TestMethod]
         public void Test_CompileResultValid()
         {
-            var compilerService = CompilerFactory.CreateCompilerService();
+            var compilerService = CompilerFactory.CreateCompilerServiceCSharp();
             var task = CompilerFactory.GetValidSmartContractTask();
             var result = compilerService.Compile(task);
             Assert.IsNull(result.Result.Error);
             Assert.IsNotNull(result.Result.Result);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void Test_CompileSolidityContractNotImplemented()
+        {
+            var compilerService = CompilerFactory.CreateCompilerServiceSolidity();
+            var task = CompilerFactory.GetSolidityContractTask();
+            var result = compilerService.Compile(task);
         }
     }
 }

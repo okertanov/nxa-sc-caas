@@ -15,7 +15,7 @@ namespace NXA.SC.Caas.Models
         public CompilerTaskStatus Status { get; private set; } = CompilerTaskStatus.CREATED;
 
         [DataMember]
-        public CreateCompilerTask? Create { get; private set; } = null;
+        public CreateCompilerTask Create { get; private set; } = default!;
 
         [DataMember]
         public CompilerResult? Result { get; private set; } = null;
@@ -23,14 +23,14 @@ namespace NXA.SC.Caas.Models
         [DataMember]
         public CompilerError? Error { get; private set; } = null;
 
-        public CompilerTask(): this(String.Empty, CompilerTaskStatus.CREATED, null, null, null)
+        public CompilerTask(): this(String.Empty, CompilerTaskStatus.CREATED, new CreateCompilerTask(), null, null)
         { 
         }
 
         public CompilerTask(
             string identifier,
             CompilerTaskStatus status,
-            CreateCompilerTask? create,
+            CreateCompilerTask create,
             CompilerResult? result,
             CompilerError? error
         ) {
