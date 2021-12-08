@@ -34,6 +34,7 @@ export class AppComponent {
     });
 
     const createCompilerTask: { [key: string]: string } = {
+      compilerTaskType: (document.getElementById('compilerTaskType') as HTMLInputElement).value,
       systemOwnerAddress: (document.getElementById('systemOwnerAddress') as HTMLInputElement).value,
       contractAuthorAddress: (document.getElementById('contractAuthorAddress') as HTMLInputElement).value,
       contractAuthorName: (document.getElementById('contractAuthorName') as HTMLInputElement).value,

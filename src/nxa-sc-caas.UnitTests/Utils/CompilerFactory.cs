@@ -21,11 +21,17 @@ namespace nxa_sc_caas.UnitTests
 {
     public class CompilerFactory
     {
-        private static ILogger<CompilerService> _logger { get { return new LoggerFactory().CreateLogger<CompilerService>(); } set { } }
+        private static ILogger<CSharpCompilerService> _logger { get { return new LoggerFactory().CreateLogger<CSharpCompilerService>(); } set { } }
+        private static ILogger<SolidityCompilerService> _loggerSolidity { get { return new LoggerFactory().CreateLogger<SolidityCompilerService>(); } set { } }
 
-        public static CompilerService CreateCompilerService()
+        public static SolidityCompilerService CreateCompilerServiceSolidity()
         {
-            var compilerService = new CompilerService(_logger);
+            var compilerService = new SolidityCompilerService(_loggerSolidity);
+            return compilerService;
+        }
+        public static CSharpCompilerService CreateCompilerServiceCSharp()
+        {
+            var compilerService = new CSharpCompilerService(_logger);
             return compilerService;
         }
         public static CompilerTask GetValidSmartContractTask() 
@@ -45,14 +51,21 @@ namespace nxa_sc_caas.UnitTests
                             return 1;
                         }
                     }
-                }" 
+                }",
+                CompilerTaskType = CompilerTaskTypeEnum.CSHARP
             };
             var task = new CompilerTask("123", CompilerTaskStatus.SCHEDULED, compilerTaskCreate, null, null);
             return task;
         }
         public static CompilerTask GetInvalidSmartContractTask()
         {
-            var compilerTaskCreate = new CreateCompilerTask { ContractSource = "invalidcontract" };
+            var compilerTaskCreate = new CreateCompilerTask { ContractSource = "invalidcontract", CompilerTaskType = CompilerTaskTypeEnum.CSHARP };
+            var task = new CompilerTask("1234", CompilerTaskStatus.SCHEDULED, compilerTaskCreate, null, null);
+            return task;
+        }
+        public static CompilerTask GetSolidityContractTask()
+        {
+            var compilerTaskCreate = new CreateCompilerTask { ContractSource = "invalidcontract", CompilerTaskType = CompilerTaskTypeEnum.SOLIDITY };
             var task = new CompilerTask("1234", CompilerTaskStatus.SCHEDULED, compilerTaskCreate, null, null);
             return task;
         }

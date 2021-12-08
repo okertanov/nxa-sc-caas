@@ -10,18 +10,19 @@ using Neo.IO;
 using MediatR;
 using System.Threading;
 using System.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NXA.SC.Caas.Services.Compiler.Impl
 {
-    public class CompilerService : ICompilerService
+    public class CSharpCompilerService : ICompilerService
     {
-        private readonly ILogger<CompilerService> logger;
+        private readonly ILogger<CSharpCompilerService> logger;
 
-        public CompilerService(ILogger<CompilerService> logger)
+        public CSharpCompilerService(ILogger<CSharpCompilerService> logger)
         {
             this.logger = logger;
         }
-
+        
         public Task<CompilerTask> Compile(CompilerTask task)
         {
             logger.LogDebug($"Compiling: {task.Create?.ContractName}...");
@@ -83,15 +84,31 @@ namespace NXA.SC.Caas.Services.Compiler.Impl
 
     public class CompileCommandHandler : IRequestHandler<CompileCommand, CompilerTask>
     {
-        private readonly ICompilerService _compilerService;
-        public CompileCommandHandler(ICompilerService compilerService)
+        private readonly IServiceProvider serviceProvider;
+        private ICompilerService compilerService;
+        public CompileCommandHandler(IServiceProvider serviceProvider, ICompilerService compilerService)
         {
-            _compilerService = compilerService;
+            this.serviceProvider = serviceProvider;
+            this.compilerService = compilerService;
         }
 
         public Task<CompilerTask> Handle(CompileCommand request, CancellationToken cancellationToken)
         {
-            return _compilerService.Compile(request.Task);
+            var services = serviceProvider.GetServices<ICompilerService>();
+
+            switch (request.Task.Create.CompilerTaskType)
+            {
+                case CompilerTaskTypeEnum.SOLIDITY:
+                    compilerService = services.First(s => s.GetType() == typeof(SolidityCompilerService));
+                    break;
+                case CompilerTaskTypeEnum.CSHARP:
+                    compilerService = services.First(s => s.GetType() == typeof(CSharpCompilerService));
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+
+            return compilerService.Compile(request.Task);
         }
     }
 

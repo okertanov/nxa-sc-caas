@@ -1,7 +1,7 @@
 #
 # Builder
 #
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS builder
 
 ENV GITLAB_TOKEN=gitlab-ci-token:wC6cFZiaKt64xxzo39nf
 
@@ -59,7 +59,7 @@ RUN make
 #
 # Run
 #
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS run
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS run
 
 ENV NXA_SC_CAAS_DIR=nxa-sc-caas-dir
 

@@ -9,6 +9,10 @@ namespace NXA.SC.Caas.Models
     {
         [Required]
         [DataMember]
+        public CompilerTaskTypeEnum CompilerTaskType { get; set; }
+
+        [Required]
+        [DataMember]
         public string SystemOwnerAddress { get; set; } = String.Empty;
 
         [Required]
