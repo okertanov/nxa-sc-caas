@@ -74,4 +74,6 @@ WORKDIR /app-root/caas
 COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas/dist ./
 COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas.UnitTests/TestTokens ../nxa-sc-caas.UnitTests/TestTokens
 
+ENV Logging__Console__FormatterName=
+
 ENTRYPOINT ["dotnet","nxa-sc-caas.dll"]

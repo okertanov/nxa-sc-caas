@@ -58,8 +58,6 @@ services:
     hostname: "caas-database-pgadmin"
     container_name: caas-database-pgadmin
     image: dpage/pgadmin4
-    networks:
-      - caas_net
     environment:
         PGADMIN_DEFAULT_EMAIL: pgadmin@xdaro.com
         PGADMIN_DEFAULT_PASSWORD: 0e4896a9-c3c1-46de-bb69-48032f00eccc
