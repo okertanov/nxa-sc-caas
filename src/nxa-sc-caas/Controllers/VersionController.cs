@@ -10,10 +10,10 @@ namespace NXA.SC.Caas.Controllers
     [Route("[controller]")]
     public class VersionController : ControllerBase 
     {
-        private readonly ILogger<StatusController> logger;
+        private readonly ILogger<VersionController> logger;
 
         public VersionController(
-            ILogger<StatusController> logger
+            ILogger<VersionController> logger
         )
         {
             this.logger = logger;

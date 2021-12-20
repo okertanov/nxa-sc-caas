@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NXA.SC.Caas.Extensions;
 using NXA.SC.Caas.Models;
-using static NXA.SC.Caas.Models.CompilerBackgroundService;
+using static NXA.SC.Caas.Services.CompilerBackgroundService;
 
 namespace NXA.SC.Caas.Services.Persist.Impl
 {

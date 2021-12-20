@@ -3,7 +3,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>nxa_sc_caas</RootNamespace>
     <Nullable>enable</Nullable>
-    <SpaRoot>CodeEditor</SpaRoot>
+	  <SpaRoot>CodeEditor</SpaRoot>
+	  <NodeCodeRoot>NodeCode</NodeCodeRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)/node_modules/**</DefaultItemExcludes>
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
   </PropertyGroup>
@@ -13,6 +14,7 @@
     <PackageReference Include="Handlebars.Net" Version="2.0.9" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="3.1.21" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis" Version="4.0.1" />
     <PackageReference Include="Microsoft.Composition" Version="1.0.31" />
@@ -52,24 +54,30 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
       <None Remove="$(SpaRoot)\**" />
+      <None Remove="$(NodeCodeRoot)\node_modules\**" />
       <Content Remove="$(SpaRoot)\**" />
+      <Content Remove="$(NodeCodeRoot)\node_modules\**" />
       <Compile Remove="$(SpaRoot)\**" />
+      <Compile Remove="$(NodeCodeRoot)\node_modules\**" />
       <EmbeddedResource Remove="$(SpaRoot)\**" />
+      <EmbeddedResource Remove="$(NodeCodeRoot)\node_modules\**" />
       <TypeScriptCompile Remove="$(SpaRoot)\**" />
+      <TypeScriptCompile Remove="$(NodeCodeRoot)\node_modules\**" />
   </ItemGroup>
 
   <Target Name="EnsureNodeNpm" AfterTargets="Build" Condition="!Exists('$(SpaRoot)\node_modules')">
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
   </Target>
-
-  <Target Name="EnsureNodeBuild" AfterTargets="EnsureNodeNpm" Condition="!Exists('$(SpaRoot)\dist')">
+	
+	<Target Name="EnsureNodeBuild" AfterTargets="EnsureNodeNpm" Condition="!Exists('$(SpaRoot)\dist')">
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
   </Target>
 
   <Target Name="PublishRunWebpack" AfterTargets="Build">
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
-      <DistFiles Include="$(SpaRoot)\dist\**" />
+		<DistFiles Include="$(SpaRoot)\dist\**" />
+		<DistFiles Include="$(NodeCodeRoot)\**" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -77,5 +85,9 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
-    
+
+	<Target Name="EnsureNodeNpmCodeInstalled" BeforeTargets="Build" Condition="!Exists('$(NodeCodeRoot)\node_modules')">
+		<Exec WorkingDirectory="$(NodeCodeRoot)" Command="npm install" />
+	</Target>
+
 </Project>
