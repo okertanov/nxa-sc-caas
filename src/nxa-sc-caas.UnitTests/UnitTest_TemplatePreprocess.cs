@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NXA.SC.Caas.Models;
+using NXA.SC.Caas.Services;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

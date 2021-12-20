@@ -8,8 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using NXA.SC.Caas.Services.Compiler.Impl;
 using NXA.SC.Caas.Services.Persist.Impl;
 using Microsoft.Extensions.Logging;
+using NXA.SC.Caas.Models;
 
-namespace NXA.SC.Caas.Models
+namespace NXA.SC.Caas.Services
 {
     public class CompilerBackgroundService : HostedService
     {

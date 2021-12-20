@@ -1,0 +1,9 @@
+{
+  "name": "nodeservicescode",
+  "version": "0.0.0",
+  "dependencies": {
+    "moment": "~2.29.1",
+    "uuidv4": "~6.2.12",
+    "bcrypt": "~5.0.1"
+  }
+}

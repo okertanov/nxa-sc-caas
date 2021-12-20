@@ -23,6 +23,7 @@ using NXA.SC.Caas.Services.Db;
 using Microsoft.AspNetCore.Diagnostics;
 using MediatR;
 using System.Reflection;
+using NXA.SC.Caas.Services;
 
 namespace NXA.SC.Caas
 {
@@ -39,12 +40,14 @@ namespace NXA.SC.Caas
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddNodeServices();
             services.AddScoped<ITaskPersistService, TaskPersistService>();
             services.AddScoped<ICompilerService, CSharpCompilerService>();
             services.AddScoped<ICompilerService, SolidityCompilerService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IDbSettings, DbSettings>();
             services.AddScoped<ITemplatePreprocessService, TemplatePreprocessService>();
+            services.AddScoped<INodeInteropService, NodeInteropService>();
             services.AddDbContext<ApiTokenContext>();
             services.AddAuthentication(TokenAuthOptions.DefaultScemeName)
                     .AddScheme<TokenAuthOptions, ApiTokenHandler>(TokenAuthOptions.DefaultScemeName, null);
@@ -81,11 +84,11 @@ namespace NXA.SC.Caas
             app.UsePathBase("/api");
             app.UseExceptionHandler(c => c.Run(async context =>
             {
-                var exception = context.Features.Get<IExceptionHandlerPathFeature>().Error;
+                var exception = context.Features.Get<IExceptionHandlerPathFeature>()?.Error;
                 var lf = app.ApplicationServices.GetService<ILoggerFactory>();
                 var logger = lf?.CreateLogger("exceptionHandlerLogger");
-                logger?.LogDebug(exception.StackTrace);
-                await context.Response.WriteAsJsonAsync(exception.Message);
+                logger?.LogDebug(exception?.StackTrace);
+                await context.Response.WriteAsJsonAsync(exception?.Message);
             }));
             app.UseRouting();
             app.UseHttpsRedirection();

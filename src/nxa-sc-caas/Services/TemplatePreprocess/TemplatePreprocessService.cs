@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Logging;
+using NXA.SC.Caas.Models;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -14,7 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NXA.SC.Caas.Models
+namespace NXA.SC.Caas.Services
 {
     public class TemplatePreprocessService : ITemplatePreprocessService
     {
