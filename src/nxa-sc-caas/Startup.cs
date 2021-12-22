@@ -54,7 +54,18 @@ namespace NXA.SC.Caas
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "NXA SC Caas", Version = "v1" });
-                c.OperationFilter<ApiTokenOperationFilter>();
+                c.AddSecurityDefinition("Token", new OpenApiSecurityScheme { Type = SecuritySchemeType.ApiKey, Name = "Token", In = ParameterLocation.Header });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                    {
+                        new OpenApiSecurityScheme {
+                                Reference = new OpenApiReference {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Token"
+                                }
+                            },
+                            Enumerable.Empty<string>().ToList()
+                        }
+                    });
             });
             services.AddHealthChecks();
             var clientAppRoot = "./CodeEditor/dist";
