@@ -66,6 +66,21 @@ services:
     networks:
       - caas_net
 
+rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    container_name: rabbitmq
+    hostname: "rabbitmq"
+    networks:
+      - caas_net
+    labels:
+      NAME: "rabbitmq"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - 5672:5672
+      - 15672:15672
+
 networks:
   caas_net:
     external: false
