@@ -9,6 +9,8 @@ using NXA.SC.Caas.Services.Compiler.Impl;
 using NXA.SC.Caas.Services.Persist.Impl;
 using Microsoft.Extensions.Logging;
 using NXA.SC.Caas.Models;
+using NXA.SC.Caas.Services.Mq;
+using Microsoft.Extensions.Hosting;
 
 namespace NXA.SC.Caas.Services
 {
@@ -22,9 +24,12 @@ namespace NXA.SC.Caas.Services
             this.serviceProvider = serviceProvider;
         }
 
-        public static IScheduledTask AddTask(IScheduledTask task)
+        public IScheduledTask AddTask(IScheduledTask task)
         {
-            allTasks.Add(task);
+            var scope = serviceProvider.CreateScope();
+            var mqService = scope.ServiceProvider.GetRequiredService<IMqService>();
+            mqService.SendTask(task as CompilerTask);
+            //allTasks.Add(task);
             return task;
         }
 
@@ -47,9 +52,15 @@ namespace NXA.SC.Caas.Services
 
         public class AddScheduledTaskCommandHandler : IRequestHandler<AddScheduledTaskCommand, IScheduledTask>
         {
+            private readonly CompilerBackgroundService backgroundService;
+
+            public AddScheduledTaskCommandHandler(CompilerBackgroundService backgroundService)
+            {
+                this.backgroundService = backgroundService;
+            }
             public Task<IScheduledTask> Handle(AddScheduledTaskCommand request, CancellationToken cancellationToken)
             {
-                var task = AddTask(request.Task);
+                var task = backgroundService.AddTask(request.Task);
                 return Task.FromResult(task);
             }
         }

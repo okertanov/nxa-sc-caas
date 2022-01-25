@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -15,15 +13,14 @@ using NXA.SC.Caas.Services.Compiler;
 using NXA.SC.Caas.Services.Compiler.Impl;
 using NXA.SC.Caas.Services.Token;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using NXA.SC.Caas.Models;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
-using System.IO;
 using NXA.SC.Caas.Services.Db;
 using Microsoft.AspNetCore.Diagnostics;
 using MediatR;
 using System.Reflection;
 using NXA.SC.Caas.Services;
+using NXA.SC.Caas.Services.Mq;
 
 namespace NXA.SC.Caas
 {
@@ -41,6 +38,7 @@ namespace NXA.SC.Caas
         {
             services.AddControllers();
             services.AddNodeServices();
+            services.AddScoped<IMqService, MqService>();
             services.AddScoped<ITaskPersistService, TaskPersistService>();
             services.AddScoped<ICompilerService, CSharpCompilerService>();
             services.AddScoped<ICompilerService, SolidityCompilerService>();
