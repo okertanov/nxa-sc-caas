@@ -39,13 +39,13 @@ namespace nxa_sc_caas.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(AggregateException))]
-        public void Test_EvalInvalidReturnsException()
+        public void Test_EvalInvalidReturnsError()
         {
             var param = @"_ 1";
             var nodeInteropService = NodeInteropFactory.CreateNodeInteropService();
             var res = nodeInteropService.Execute(scripts, "evaluate", new[] { param });
-            var evalRes = res.Result["result"];
+            var error = res.Result["error"];
+            Assert.IsNotNull(error);
         }
 
         [TestMethod]

@@ -54,28 +54,27 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
       <None Remove="$(SpaRoot)\**" />
-      <None Remove="$(NodeCodeRoot)\node_modules\**" />
       <Content Remove="$(SpaRoot)\**" />
-      <Content Remove="$(NodeCodeRoot)\node_modules\**" />
       <Compile Remove="$(SpaRoot)\**" />
-      <Compile Remove="$(NodeCodeRoot)\node_modules\**" />
       <EmbeddedResource Remove="$(SpaRoot)\**" />
-      <EmbeddedResource Remove="$(NodeCodeRoot)\node_modules\**" />
       <TypeScriptCompile Remove="$(SpaRoot)\**" />
-      <TypeScriptCompile Remove="$(NodeCodeRoot)\node_modules\**" />
+      <TypeScriptCompile Remove="..\..\node_modules" />
   </ItemGroup>
-
   <Target Name="EnsureNodeNpm" AfterTargets="Build" Condition="!Exists('$(SpaRoot)\node_modules')">
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
   </Target>
-	
+
 	<Target Name="EnsureNodeBuild" AfterTargets="EnsureNodeNpm" Condition="!Exists('$(SpaRoot)\dist')">
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
-  </Target>
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+	</Target>
+
+	<Target Name="EnsureNodeInstalledForInterop" AfterTargets="Build" Condition="!Exists('..\..\node_modules')">
+		<Exec WorkingDirectory="..\..\" Command="npm install" />
+	</Target>
 
   <Target Name="PublishRunWebpack" AfterTargets="Build">
     <!-- Include the newly-built files in the publish output -->
-    <ItemGroup>
+	  <ItemGroup>
 		<DistFiles Include="$(SpaRoot)\dist\**" />
 		<DistFiles Include="$(NodeCodeRoot)\**" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
@@ -85,9 +84,4 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
-
-	<Target Name="EnsureNodeNpmCodeInstalled" BeforeTargets="Build" Condition="!Exists('$(NodeCodeRoot)\node_modules')">
-		<Exec WorkingDirectory="$(NodeCodeRoot)" Command="npm install" />
-	</Target>
-
 </Project>
