@@ -19,7 +19,7 @@ ENV NEO_DEVPACK_DIR=neo-devpack-dotnet
 ENV NXA_SC_CAAS_REPO=https://${GITLAB_TOKEN}@gitlab.team11.lv/nxa/neo-frontier-launchpad-2021/nxa-sc-caas.git
 ENV NXA_SC_CAAS_DIR=nxa-sc-caas-dir
 # Node dpkg source repo
-RUN curl --silent --location https://deb.nodesource.com/setup_16.x | bash -
+RUN curl --silent --location https://deb.nodesource.com/setup_14.x | bash -
 
 # System deb packages
 RUN apt update && apt install -y \
@@ -62,7 +62,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS run
 
 ENV NXA_SC_CAAS_DIR=nxa-sc-caas-dir
 
-RUN curl --silent --location https://deb.nodesource.com/setup_16.x | bash -
+RUN curl --silent --location https://deb.nodesource.com/setup_14.x | bash -
 RUN apt update && apt install -y \
     build-essential \
     procps\
