@@ -1,14 +1,12 @@
 /// <reference path="../../../node_modules/monaco-editor/monaco.d.ts" />
 import { Component, Input, AfterViewInit, ElementRef, ViewChild, forwardRef, NgZone, Output, EventEmitter, OnChanges } from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
-let loadedMonaco = false;
-let loadPromise: Promise<void>;
+
 
 @Component({
   selector: 'app-monaco-editor',
   templateUrl: './monaco-editor.component.html',
-  styleUrls: ['./monaco-editor.component.css'],
+  styleUrls: ['./monaco-editor.component.scss'],
   providers: []
 })
 export class MonacoEditorComponent implements AfterViewInit {
@@ -18,6 +16,9 @@ export class MonacoEditorComponent implements AfterViewInit {
   @Input() code = '';
   @Output() codeChange = new EventEmitter<String>();
 
+  private loadPromise: Promise<void>;
+  private loadedMonaco = false;
+
   // Holds instance of the current code editor
   codeEditorInstance: monaco.editor.IStandaloneCodeEditor;
 
@@ -26,21 +27,21 @@ export class MonacoEditorComponent implements AfterViewInit {
   // supports two-way binding
   ngOnChanges() {
     if (this.codeEditorInstance) {
-      var codeCursorPos= this.codeEditorInstance.getPosition();
+      const codeCursorPos = this.codeEditorInstance.getPosition();
       this.codeEditorInstance.setValue(this.code);
       this.codeEditorInstance.setPosition(codeCursorPos);
     }
   }
 
   ngAfterViewInit() {
-    if (loadedMonaco) {
+    if (this.loadedMonaco) {
       // Wait until monaco editor is available
-      loadPromise.then(() => {
+      this.loadPromise.then(() => {
         this.initMonaco();
       });
     } else {
-      loadedMonaco = true;
-      loadPromise = new Promise<void>((resolve: any) => {
+      this.loadedMonaco = true;
+      this.loadPromise = new Promise<void>((resolve: any) => {
         if (typeof ((<any>window).monaco) === 'object') {
           resolve();
           return;
