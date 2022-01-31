@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using MediatR;
 using System.Reflection;
 using NXA.SC.Caas.Services;
+using NXA.SC.Caas.Shared.Utils;
 
 namespace NXA.SC.Caas
 {
@@ -122,6 +123,7 @@ namespace NXA.SC.Caas
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+            ApplicationLogging.LoggerFactory = app.ApplicationServices.GetService<ILoggerFactory>();
         }
     }
 }

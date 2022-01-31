@@ -1,0 +1,22 @@
+{
+  "name": "nodeservicescode",
+  "version": "1.0.0",
+  "scripts": {
+    "compile": "npx hardhat compile"
+  },
+  "dependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-etherscan": "^2.1.6",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
+    "@openzeppelin/contracts": "^4.3.0",
+    "@openzeppelin/contracts-upgradeable": "^4.3.1",
+    "@openzeppelin/hardhat-upgrades": "^1.10.0",
+    "ethers": "^5.1.4",
+    "hardhat": "^2.2.1",
+    "solidity-bytes-utils": "^0.8.0",
+    "web3": "^1.5.2",
+    "moment": "~2.29.1",
+    "uuidv4": "~6.2.12",
+    "bcrypt": "~5.0.1"
+  }
+}
