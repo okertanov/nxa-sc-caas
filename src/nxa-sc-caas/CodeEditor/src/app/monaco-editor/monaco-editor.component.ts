@@ -6,7 +6,7 @@ import { Component, Input, AfterViewInit, ElementRef, ViewChild, forwardRef, NgZ
 @Component({
   selector: 'app-monaco-editor',
   templateUrl: './monaco-editor.component.html',
-  styleUrls: ['./monaco-editor.component.css'],
+  styleUrls: ['./monaco-editor.component.scss'],
   providers: []
 })
 export class MonacoEditorComponent implements AfterViewInit {
