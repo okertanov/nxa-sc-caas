@@ -3,7 +3,6 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>nxa_sc_caas</RootNamespace>
     <Nullable>enable</Nullable>
-	  <SpaRoot>CodeEditor</SpaRoot>
 	  <NodeCodeRoot>NodeCode</NodeCodeRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)/node_modules/**</DefaultItemExcludes>
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
@@ -60,13 +59,6 @@
       <TypeScriptCompile Remove="$(SpaRoot)\**" />
       <TypeScriptCompile Remove="..\..\node_modules" />
   </ItemGroup>
-  <Target Name="EnsureNodeNpm" AfterTargets="Build" Condition="!Exists('$(SpaRoot)\node_modules')">
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-  </Target>
-
-	<Target Name="EnsureNodeBuild" AfterTargets="EnsureNodeNpm" Condition="!Exists('$(SpaRoot)\dist')">
-		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
-	</Target>
 
 	<Target Name="EnsureNodeInstalledForInterop" AfterTargets="Build" Condition="!Exists('..\..\node_modules')">
 		<Exec WorkingDirectory="..\..\" Command="npm install" />
@@ -75,7 +67,6 @@
   <Target Name="PublishRunWebpack" AfterTargets="Build">
     <!-- Include the newly-built files in the publish output -->
 	  <ItemGroup>
-		<DistFiles Include="$(SpaRoot)\dist\**" />
 		<DistFiles Include="$(NodeCodeRoot)\**" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>

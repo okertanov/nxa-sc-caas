@@ -69,11 +69,6 @@ namespace NXA.SC.Caas
                     });
             });
             services.AddHealthChecks();
-            var clientAppRoot = "./CodeEditor/dist";
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = clientAppRoot;
-            });
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddHostedService<CompilerBackgroundService>();
         }
@@ -112,17 +107,6 @@ namespace NXA.SC.Caas
                 endpoints.MapHealthChecks("/Status");
             });
             app.UseFileServer();
-            app.UseSpaStaticFiles();
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "./CodeEditor/dist";
-                spa.Options.DefaultPage = new PathString("/code-editor.html");
-                // TODO: NPM is turned off ATM
-                if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
-            });
             ApplicationLogging.LoggerFactory = app.ApplicationServices.GetService<ILoggerFactory>();
         }
     }
