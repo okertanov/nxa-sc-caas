@@ -5,10 +5,9 @@
 # For IE 9-11 support, please remove 'not' from the last line of the file and adjust as needed
 
 > 0.5%
-last 2 versions
+last 1 versions
 Firefox ESR
 not dead
 not IE 9-11
 not ios_saf 15.2-15.3
 not safari 15.2-15.3
-last 2 Safari major version
