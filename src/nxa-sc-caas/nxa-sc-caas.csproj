@@ -4,7 +4,7 @@
     <RootNamespace>nxa_sc_caas</RootNamespace>
     <Nullable>enable</Nullable>
 	  <NodeCodeRoot>NodeCode</NodeCodeRoot>
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)/node_modules/**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
   </PropertyGroup>
 
