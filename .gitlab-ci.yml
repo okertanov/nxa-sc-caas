@@ -1,5 +1,5 @@
 variables:
-  REGISTRY_IMAGE: registry.teamxi.cloud/nxa-nft/nxa-sc-caas
+  REGISTRY_IMAGE: registry.team11.lv/nxa/nxa-sc-caas
   DOCKER_TLS_CERTDIR: "/certs"
   REMOTE_HOST: 13.49.202.210
 
