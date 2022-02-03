@@ -44,8 +44,7 @@ deploy_after_merge:
   - ssh-keyscan $REMOTE_HOST >> ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
   tags:
-  - docker
-  - build
+  - deploy
   script:
   #
   - ssh ubuntu@$REMOTE_HOST "echo -n $HARBOR_PASSWORD | sudo docker login -u $HARBOR_USERNAME --password-stdin $HARBOR_REGISTRY"
