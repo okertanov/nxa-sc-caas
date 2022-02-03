@@ -6,7 +6,7 @@ services:
   # nxa-sc-caas
   #
   nxa-sc-caas:
-    image: registry.teamxi.cloud/nxa-nft/nxa-sc-caas:latest
+    image: registry.team11.lv/nxa/nxa-sc-caas:latest
     container_name: nxa-sc-caas
     hostname: "nxa-sc-caas"
     links:
