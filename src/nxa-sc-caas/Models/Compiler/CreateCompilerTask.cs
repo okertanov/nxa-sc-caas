@@ -49,14 +49,15 @@ namespace NXA.SC.Caas.Models
         public ContractDictionary()
             : base(new Dictionary<string, object>() {
                 { ContractValueEnum.ContractName.ToString(), String.Empty },
+                { ContractValueEnum.ContractSymbol.ToString(), String.Empty },
                 { ContractValueEnum.SystemOwnerAddress.ToString(), String.Empty },
                 { ContractValueEnum.ContractAuthorAddress.ToString(), String.Empty },
                 { ContractValueEnum.ContractAuthorName.ToString(), String.Empty },
                 { ContractValueEnum.ContractAuthorEmail.ToString(), String.Empty },
                 { ContractValueEnum.ContractDescription.ToString(), String.Empty },
-                { ContractValueEnum.ContractSymbol.ToString(), String.Empty },
                 { ContractValueEnum.ContractDecimals.ToString(), String.Empty },
-                { ContractValueEnum.ContractInitialCoins.ToString(), String.Empty }
+                { ContractValueEnum.ContractInitialCoins.ToString(), String.Empty },
+                {"any", "any"}
             })
         {
         }
