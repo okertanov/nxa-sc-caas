@@ -25,28 +25,20 @@ namespace NXA.SC.Caas.Services.Compiler.Impl
         
         public Task<CompilerTask> Compile(CompilerTask task)
         {
-            logger.LogDebug($"Compiling: {task.Create?.ContractName}...");
+            var contractName = task.Create.GetNamedContractVal(ContractValueEnum.ContractName).ToString();
+            if (string.IsNullOrEmpty(contractName))
+            {
+                throw new ArgumentNullException(nameof(contractName));
+            }
+
+            logger.LogDebug($"Compiling: {contractName}...");
             
             var resultTask = task;
             var neoRes = new Neo.Compiler.CompileResult();
             var sourceStr = task.Create!.ContractSource;
             var sourceStrNormalized = sourceStr.IsBase64String() ? Encoding.UTF8.GetString(Convert.FromBase64String(sourceStr)) : sourceStr;
             var template = Handlebars.Compile(sourceStrNormalized);
-            
-            var data = new
-            {
-                SystemOwnerAddress = task.Create.SystemOwnerAddress,
-                ContractAuthorAddress = task.Create.ContractAuthorAddress,
-                ContractAuthorName = task.Create.ContractAuthorName,
-                ContractAuthorEmail = task.Create.ContractAuthorEmail,
-                ContractName = task.Create.ContractName,
-                ContractDescription = task.Create.ContractDescription,
-                ContractSymbol = task.Create.ContractSymbol,
-                ContractDecimals = task.Create.ContractDecimals,
-                ContractInitialCoins = task.Create.ContractInitialCoins
-            };
-
-            var codeStr = template(data);
+            var codeStr = template(task.Create.ContractValues);
 
             try
             {
@@ -58,7 +50,7 @@ namespace NXA.SC.Caas.Services.Compiler.Impl
 
                 var stackTrace = new StackTrace(ex, true);
                 var line = stackTrace?.GetFrame(0)?.GetFileLineNumber() ?? 0;
-                var compilerError = new CompilerError(task.Create.ContractName, (uint)line, ex.HResult.ToString(), ex.Message, ex.StackTrace);
+                var compilerError = new CompilerError(contractName, (uint)line, ex.HResult.ToString(), ex.Message, ex.StackTrace);
                 resultTask = task.SetError(compilerError);
                 return Task.FromResult(resultTask);
             }
@@ -69,7 +61,7 @@ namespace NXA.SC.Caas.Services.Compiler.Impl
             {
                 var firstError = neoErrors.First();
                 var errorLine = firstError.Location.GetLineSpan().StartLinePosition.Line;
-                var compilerError = new CompilerError(task.Create.ContractName, (uint)errorLine, firstError.Id, firstError.GetMessage(), null);
+                var compilerError = new CompilerError(contractName, (uint)errorLine, firstError.Id, firstError.GetMessage(), null);
                 resultTask = task.SetError(compilerError);
             }
             else

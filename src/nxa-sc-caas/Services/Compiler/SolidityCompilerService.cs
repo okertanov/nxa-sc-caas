@@ -38,7 +38,7 @@ namespace NXA.SC.Caas.Services.Compiler.Impl
 
             if (res.ContainsKey("error"))
             {
-                var compilerError = new CompilerError(task.Create.ContractName, default(int), String.Empty, res.ToString(), null);
+                var compilerError = new CompilerError(contractName, default(int), String.Empty, res.ToString(), null);
                 resultTask = resultTask.SetError(compilerError);
             }
             else
@@ -47,7 +47,7 @@ namespace NXA.SC.Caas.Services.Compiler.Impl
                 var resAbi = res["abi"]?.ToString();
                 if (string.IsNullOrEmpty(resByteCode) || string.IsNullOrEmpty(resAbi))
                 {
-                    var compilerError = new CompilerError(task.Create.ContractName, default(int), String.Empty, "No bytecode/abi in result", null);
+                    var compilerError = new CompilerError(contractName, default(int), String.Empty, "No bytecode/abi in result", null);
                     resultTask.SetError(compilerError);
                 }
                 resByteCode = resByteCode!.PadBase64String();

@@ -3,6 +3,7 @@ using NXA.SC.Caas.Extensions;
 using NXA.SC.Caas.Models;
 using NXA.SC.Caas.Services.Compiler.Impl;
 using System;
+using System.Collections.Generic;
 
 namespace nxa_sc_caas.UnitTests
 {
@@ -27,9 +28,14 @@ namespace nxa_sc_caas.UnitTests
         public void Test_SetsCreate()
         {
             var task = new CompilerTask();
-            var create = new CreateCompilerTask { ContractAuthorName = "name1" };
+            var taskContractVals = new Dictionary<string, object> 
+            { 
+                { ContractValueEnum.ContractAuthorName.ToString(), "name1" },
+                { ContractValueEnum.ContractName.ToString(), "name12" },
+            };
+            var create = new CreateCompilerTask { ContractValues = taskContractVals };
             var newTask = task.SetCreate(create);
-            Assert.AreEqual(newTask.Create.ContractAuthorName, "name1");
+            Assert.AreEqual(newTask.Create.GetNamedContractVal(ContractValueEnum.ContractAuthorName), "name1");
         }
         [TestMethod]
         public void Test_SetsResult()
@@ -64,6 +70,32 @@ namespace nxa_sc_caas.UnitTests
             var result = compilerService.Compile(task);
             Assert.IsNull(result.Result.Error);
             Assert.IsNotNull(result.Result.Result);
+        }
+        [TestMethod]
+        public void Test_ContractCustomValueAddedString()
+        {
+            var task = new CompilerTask();
+            var taskContractVals = new Dictionary<string, object>
+            {
+                { "testParam", "testParamVal" },
+                { ContractValueEnum.ContractName.ToString(), "name12" },
+            };
+            var create = new CreateCompilerTask { ContractValues = taskContractVals };
+            var newTask = task.SetCreate(create);
+            Assert.AreEqual(newTask.Create.ContractValues["testParam"], "testParamVal");
+        }
+        [TestMethod]
+        public void Test_ContractCustomValueAddedInt()
+        {
+            var task = new CompilerTask();
+            var taskContractVals = new Dictionary<string, object>
+            {
+                { "testParamInt", 1 },
+                { ContractValueEnum.ContractName.ToString(), "name12" },
+            };
+            var create = new CreateCompilerTask { ContractValues = taskContractVals };
+            var newTask = task.SetCreate(create);
+            Assert.AreEqual(newTask.Create.ContractValues["testParamInt"], 1);
         }
     }
 }
