@@ -38,8 +38,12 @@ namespace nxa_sc_caas.UnitTests
             var compilerService = new CSharpCompilerService(_logger);
             return compilerService;
         }
-        public static CompilerTask GetValidSmartContractTask() 
+        public static CompilerTask GetValidSmartContractTask()
         {
+            var taskContractVals = new Dictionary<string, object>
+            {
+                { ContractValueEnum.ContractName.ToString(), "name123" },
+            };
             var compilerTaskCreate = new CreateCompilerTask { ContractSource = @"
                 using Neo;
                 using Neo.SmartContract;
@@ -56,14 +60,19 @@ namespace nxa_sc_caas.UnitTests
                         }
                     }
                 }",
-                CompilerTaskType = CompilerTaskTypeEnum.CSHARP
+                CompilerTaskType = CompilerTaskTypeEnum.CSHARP,
+                ContractValues = taskContractVals
             };
             var task = new CompilerTask("123", CompilerTaskStatus.SCHEDULED, compilerTaskCreate, null, null);
             return task;
         }
         public static CompilerTask GetInvalidSmartContractTask()
         {
-            var compilerTaskCreate = new CreateCompilerTask { ContractSource = "invalidcontract", CompilerTaskType = CompilerTaskTypeEnum.CSHARP };
+            var taskContractVals = new Dictionary<string, object>
+            {
+                { ContractValueEnum.ContractName.ToString(), "name12" },
+            };
+            var compilerTaskCreate = new CreateCompilerTask { ContractSource = "invalidcontract", CompilerTaskType = CompilerTaskTypeEnum.CSHARP, ContractValues = taskContractVals };
             var task = new CompilerTask("1234", CompilerTaskStatus.SCHEDULED, compilerTaskCreate, null, null);
             return task;
         }
