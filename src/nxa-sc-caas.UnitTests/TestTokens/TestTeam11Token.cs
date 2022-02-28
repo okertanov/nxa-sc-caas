@@ -198,7 +198,7 @@ namespace Neo.SmartContract.Examples
         // Initial Coins w/o 'decimals' e.g 1M is 1M coins,
         // 100M when for example 'decimals' is '2'.
         //
-        private static int InitialCoins => 1_000_000;
+        private static int InitialCoins => 100_000_000;
 
         [Safe]
         [DisplayName("name")]
@@ -212,6 +212,9 @@ namespace Neo.SmartContract.Examples
         [DisplayName("decimals")]
         public override byte Decimals() => 2;
 
+        [InitialValue("64", Neo.SmartContract.ContractParameterType.ByteArray)] 
+        private static readonly BigInteger ConvertDecimal;
+
         [Safe]
         public static string[] SupportedStandards() => new string[] { "NEP-17" };
 
@@ -224,8 +227,7 @@ namespace Neo.SmartContract.Examples
                 return;
             }
 
-            SetOwner(owner);
-            
+            ContractMap.Put(ownerKey, owner);
             // Impl w/o checking Witness since there is no TX context here.
             NXANep17Token.MintImpl(GetOwner(), Team11Token.InitialCoins);
         }
@@ -239,20 +241,15 @@ namespace Neo.SmartContract.Examples
         [Safe]
         public static UInt160 GetOwner()
         {
-           // return (UInt160)ContractMap.Get(ownerKey);
-           return owner;
+           return (UInt160)ContractMap.Get(ownerKey);
         }
 
         public static UInt160 SetOwner(UInt160 account)
         {
-            /*var oldOwner = (UInt160)ContractMap.Get(ownerKey);
-
+            var oldOwner = (UInt160)ContractMap.Get(ownerKey);
             CheckOwner(account);
-
             ContractMap.Put(ownerKey, owner);
-
-            return oldOwner;*/
-            return owner;
+            return oldOwner;
         }
 
         public static void CheckOwner(UInt160 account)
@@ -270,7 +267,7 @@ namespace Neo.SmartContract.Examples
         public static new void Mint(UInt160 account, BigInteger amount)
         {
             CheckOwner(account);
-
+            amount = amount / ConvertDecimal;
             NXANep17Token.MintImpl(account, amount);
         }
 
