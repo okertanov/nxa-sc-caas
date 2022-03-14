@@ -42,7 +42,7 @@ namespace NXA.SC.Caas.Services.Persist.Impl
 
         public Task<CompilerTask> Store(CreateCompilerTask task, bool asyncCompilation)
 		{
-            logger.LogDebug($"Storing: {task.ContractName}...");
+            logger.LogDebug($"Storing: {task.ContractValues}...");
 
             var result = new CompilerTask(Guid.NewGuid().ToString(), CompilerTaskStatus.SCHEDULED, task, null, null);
 			if (asyncCompilation)
@@ -54,7 +54,7 @@ namespace NXA.SC.Caas.Services.Persist.Impl
         }
 
         public Task<CompilerTask> Update(CompilerTask task, bool asyncCompilation) {
-            logger.LogDebug($"Updating: {task.Create?.ContractName}...");
+            logger.LogDebug($"Updating: {task.Create?.ContractValues}...");
 			if(task.Result != null)
 				task = CompilerTaskExtensions.SetStatus(task, CompilerTaskStatus.PROCESSED);
 			else

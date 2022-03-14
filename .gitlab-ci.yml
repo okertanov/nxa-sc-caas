@@ -1,5 +1,5 @@
 variables:
-  REGISTRY_IMAGE: registry.teamxi.cloud/nxa-nft/nxa-sc-caas
+  REGISTRY_IMAGE: registry.team11.lv/nxa/nxa-sc-caas
   DOCKER_TLS_CERTDIR: "/certs"
   REMOTE_HOST: 13.49.202.210
 
@@ -52,8 +52,7 @@ manual_deploy:
   - ssh-keyscan $REMOTE_HOST >> ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
   tags:
-  - docker
-  - build
+  - deploy
   script:
   #
   - ssh ubuntu@$REMOTE_HOST "echo -n $HARBOR_PASSWORD | sudo docker login -u $HARBOR_USERNAME --password-stdin $HARBOR_REGISTRY"

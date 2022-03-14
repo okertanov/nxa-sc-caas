@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -13,13 +15,16 @@ using NXA.SC.Caas.Services.Compiler;
 using NXA.SC.Caas.Services.Compiler.Impl;
 using NXA.SC.Caas.Services.Token;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using NXA.SC.Caas.Models;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using System.IO;
 using NXA.SC.Caas.Services.Db;
 using Microsoft.AspNetCore.Diagnostics;
 using MediatR;
 using System.Reflection;
 using NXA.SC.Caas.Services;
+using NXA.SC.Caas.Shared.Utils;
 using NXA.SC.Caas.Services.Mq;
 
 namespace NXA.SC.Caas
@@ -66,11 +71,6 @@ namespace NXA.SC.Caas
                     });
             });
             services.AddHealthChecks();
-            var clientAppRoot = "./CodeEditor/dist";
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = clientAppRoot;
-            });
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddHostedService<CompilerBackgroundService>();
         }
@@ -109,17 +109,7 @@ namespace NXA.SC.Caas
                 endpoints.MapHealthChecks("/Status");
             });
             app.UseFileServer();
-            app.UseSpaStaticFiles();
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "./CodeEditor/dist";
-                spa.Options.DefaultPage = new PathString("/code-editor.html");
-                // TODO: NPM is turned off ATM
-                if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
-            });
+            ApplicationLogging.LoggerFactory = app.ApplicationServices.GetService<ILoggerFactory>();
         }
     }
 }

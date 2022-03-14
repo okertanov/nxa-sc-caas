@@ -71,6 +71,7 @@ RUN apt update && apt install -y \
 WORKDIR /app-root/caas
 
 COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas/dist ./
+COPY --from=builder /${NXA_SC_CAAS_DIR}/node_modules ./node_modules
 COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas.UnitTests/TestTokens ../nxa-sc-caas.UnitTests/TestTokens
 
 ENV Logging__Console__FormatterName=
