@@ -61,8 +61,6 @@ services:
         PGADMIN_DEFAULT_PASSWORD: 0e4896a9-c3c1-46de-bb69-48032f00eccc
     ports:
       - 5050:80
-    networks:
-      - caas_net
 
 networks:
   caas_net:
