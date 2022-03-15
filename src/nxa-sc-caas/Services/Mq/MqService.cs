@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NXA.SC.Caas.Models;
@@ -44,10 +43,6 @@ namespace NXA.SC.Caas.Services.Mq
             }
         }
 
-        public void ReadTask()
-        {
-        }
-
         private void CreateConnection()
         {
             try
@@ -63,6 +58,7 @@ namespace NXA.SC.Caas.Services.Mq
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.Message);
                 logger.LogError(ex.StackTrace);
             }
         }
@@ -79,26 +75,4 @@ namespace NXA.SC.Caas.Services.Mq
             return connection != null;
         }
     }
-
-    //public struct SendCompilerTaskCommand : IRequest<Task>
-    //{
-    //    public CreateCompilerTask Task { get; set; }
-    //    public bool AsyncCompilation { get; set; }
-    //}
-
-    //public class StoreTasksCommandHandler : IRequestHandler<SendCompilerTaskCommand, Task>
-    //{
-    //    private readonly IMqSettings mqService;
-
-    //    public StoreTasksCommandHandler(IMqSettings mqService)
-    //    {
-    //        this.mqService = mqService;
-    //    }
-
-    //    public Task Handle(SendCompilerTaskCommand request)
-    //    {
-    //        return mqService.SendCompilerTask(request.Task);
-    //    }
-    //}
-
 }
