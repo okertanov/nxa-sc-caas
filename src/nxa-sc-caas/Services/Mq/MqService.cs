@@ -52,7 +52,7 @@ namespace NXA.SC.Caas.Services.Mq
                     HostName = MqHost,
                     UserName = MqUser,
                     Password = MqPass,
-                    RequestedHeartbeat = new TimeSpan(0, 0, 60)
+                    Port = 5672
                 };
                 connection = factory.CreateConnection();
                 channel = connection?.CreateModel();
