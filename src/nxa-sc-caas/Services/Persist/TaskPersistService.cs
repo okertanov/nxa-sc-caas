@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NXA.SC.Caas.Extensions;
 using NXA.SC.Caas.Models;
+using NXA.SC.Caas.Services.Mq;
 using static NXA.SC.Caas.Services.CompilerBackgroundService;
 
 namespace NXA.SC.Caas.Services.Persist.Impl
@@ -14,14 +15,17 @@ namespace NXA.SC.Caas.Services.Persist.Impl
 	{
         private readonly ILogger<TaskPersistService> logger;
 		private readonly IMediator mediator;
+		private readonly IMqService mqService;
 
 		public TaskPersistService(
 			ILogger<TaskPersistService> logger,
-			IMediator mediator
+			IMediator mediator,
+			IMqService mqService
 		)
 		{
 			this.logger = logger;
 			this.mediator = mediator;
+			this.mqService = mqService;
         }
 
         public Task<CompilerTask[]> GetAll(int? offset, int? limit)
@@ -43,8 +47,8 @@ namespace NXA.SC.Caas.Services.Persist.Impl
         public Task<CompilerTask> Store(CreateCompilerTask task, bool asyncCompilation)
 		{
             logger.LogDebug($"Storing: {task.ContractValues}...");
-
             var result = new CompilerTask(Guid.NewGuid().ToString(), CompilerTaskStatus.SCHEDULED, task, null, null);
+			mqService.SendTask(result);
 			if (asyncCompilation)
 			{
 				var command = new AddScheduledTaskCommand { Task = result };
@@ -59,6 +63,8 @@ namespace NXA.SC.Caas.Services.Persist.Impl
 				task = CompilerTaskExtensions.SetStatus(task, CompilerTaskStatus.PROCESSED);
 			else
 				task = CompilerTaskExtensions.SetStatus(task, CompilerTaskStatus.FAILED);
+
+			mqService.SendTask(task);
 			if (asyncCompilation)
 			{
 				var command = new UpdateScheduledTaskCommand { Task = task };
@@ -74,6 +80,7 @@ namespace NXA.SC.Caas.Services.Persist.Impl
 			var allTasks = mediator.Send(command);
 			var taskToDelete = allTasks.Result.SingleOrDefault(t => ((CompilerTask)(t)).Identifier == identifier) as CompilerTask;
 
+			mqService.SendTask(taskToDelete);
 			if (taskToDelete == null)
 			{
 				throw new InvalidOperationException("Trying to delete nonexistent task");

@@ -30,7 +30,7 @@ namespace NXA.SC.Caas.Services.Mq
         {
             if (ConnectionExists())
             {
-                var queueName = "CompilerTasks";
+                var queueName = "CaasTasks";
                 channel?.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
                 var json = JsonConvert.SerializeObject(task);

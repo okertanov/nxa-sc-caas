@@ -9,8 +9,6 @@ using NXA.SC.Caas.Services.Compiler.Impl;
 using NXA.SC.Caas.Services.Persist.Impl;
 using Microsoft.Extensions.Logging;
 using NXA.SC.Caas.Models;
-using NXA.SC.Caas.Services.Mq;
-using Microsoft.Extensions.Hosting;
 
 namespace NXA.SC.Caas.Services
 {
@@ -22,15 +20,6 @@ namespace NXA.SC.Caas.Services
         public CompilerBackgroundService(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-        }
-
-        public IScheduledTask AddTask(IScheduledTask task)
-        {
-            var scope = serviceProvider.CreateScope();
-            var mqService = scope.ServiceProvider.GetRequiredService<IMqService>();
-            mqService.SendTask(task as CompilerTask);
-            //allTasks.Add(task);
-            return task;
         }
 
         public struct GetScheduledTasksCommand : IRequest<List<IScheduledTask>>
@@ -52,15 +41,9 @@ namespace NXA.SC.Caas.Services
 
         public class AddScheduledTaskCommandHandler : IRequestHandler<AddScheduledTaskCommand, IScheduledTask>
         {
-            private readonly CompilerBackgroundService backgroundService;
-
-            public AddScheduledTaskCommandHandler(CompilerBackgroundService backgroundService)
-            {
-                this.backgroundService = backgroundService;
-            }
             public Task<IScheduledTask> Handle(AddScheduledTaskCommand request, CancellationToken cancellationToken)
             {
-                var task = backgroundService.AddTask(request.Task);
+                var task = AddTask(request.Task);
                 return Task.FromResult(task);
             }
         }
@@ -151,6 +134,12 @@ namespace NXA.SC.Caas.Services
         {
             allTasks.RemoveAll(t => t.Identifier == identifier);
             return identifier;
+        }
+
+        public static IScheduledTask AddTask(IScheduledTask task)
+        {
+            allTasks.Add(task);
+            return task;
         }
     }
 }
