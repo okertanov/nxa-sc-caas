@@ -51,7 +51,12 @@ namespace NXA.SC.Caas.Services.Mq
                 {
                     HostName = MqHost,
                     UserName = MqUser,
-                    Password = MqPass
+                    Password = MqPass,
+                    Ssl =
+                    {
+                        ServerName = MqHost,
+                        Enabled = true
+                    }
                 };
                 connection = factory.CreateConnection();
                 channel = connection?.CreateModel();
