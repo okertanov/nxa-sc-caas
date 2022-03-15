@@ -52,19 +52,14 @@ namespace NXA.SC.Caas.Services.Mq
                     HostName = MqHost,
                     UserName = MqUser,
                     Password = MqPass,
-                    Ssl =
-                    {
-                        ServerName = MqHost,
-                        Enabled = true
-                    }
+                    RequestedHeartbeat = new TimeSpan(0, 0, 60)
                 };
                 connection = factory.CreateConnection();
                 channel = connection?.CreateModel();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.Message);
-                logger.LogError(ex.StackTrace);
+                logger.LogError($"{ex.Message}, {ex.StackTrace}");
             }
         }
 
