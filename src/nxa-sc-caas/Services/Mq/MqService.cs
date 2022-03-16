@@ -22,6 +22,7 @@ namespace NXA.SC.Caas.Services.Mq
         public MqService(ILogger<MqService> logger)
         {
             this.logger = logger;
+            CreateConnection();
         }
 
         public void SendTask(IScheduledTask? task)
@@ -29,12 +30,12 @@ namespace NXA.SC.Caas.Services.Mq
             if (ConnectionExists())
             {
                 var queueName = "CaasTasks";
-                channel?.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+                channel?.QueueDeclare(queueName, false, false, false, null);
 
                 var json = JsonConvert.SerializeObject(task);
                 var body = Encoding.UTF8.GetBytes(json);
 
-                channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body: body);
+                channel.BasicPublish("", queueName, null, body);
             }
             else
             {
@@ -48,9 +49,12 @@ namespace NXA.SC.Caas.Services.Mq
             {
                 var factory = new ConnectionFactory
                 {
-                    HostName = MqHost,
-                    UserName = MqUser,
-                    Password = MqPass
+                    //HostName = MqHost,
+                    //UserName = MqUser,
+                    //Password = MqPass
+                    HostName = "localhost",
+                    UserName = "rabbituser",
+                    Password = "rabbitpass"
                 };
                 connection = factory.CreateConnection();
                 channel = connection?.CreateModel();

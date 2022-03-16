@@ -1,9 +1,6 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NXA.SC.Caas.Services.Mq;
 
 namespace NXA.SC.Caas.Models
 {
@@ -11,17 +8,9 @@ namespace NXA.SC.Caas.Models
     {
         private Task executingTask = default!;
         private CancellationTokenSource cts = default!;
-        public IServiceProvider serviceProvider;
 
-        public HostedService(IServiceProvider serviceProvider)
-        {
-            this.serviceProvider = serviceProvider;
-        }
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var scope = serviceProvider.CreateScope();
-            var mqService = scope.ServiceProvider.GetRequiredService<IMqService>();
-            mqService.CreateConnection();
             cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             executingTask = ExecuteAsync(cts.Token);
             return executingTask.IsCompleted ? executingTask : Task.CompletedTask;
