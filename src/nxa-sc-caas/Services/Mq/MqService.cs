@@ -43,7 +43,7 @@ namespace NXA.SC.Caas.Services.Mq
             }
         }
 
-        private void CreateConnection()
+        public void CreateConnection()
         {
             try
             {
@@ -51,8 +51,7 @@ namespace NXA.SC.Caas.Services.Mq
                 {
                     HostName = MqHost,
                     UserName = MqUser,
-                    Password = MqPass,
-                    Port = 5672
+                    Password = MqPass
                 };
                 connection = factory.CreateConnection();
                 channel = connection?.CreateModel();
@@ -71,7 +70,6 @@ namespace NXA.SC.Caas.Services.Mq
             }
 
             CreateConnection();
-
             return connection != null;
         }
     }

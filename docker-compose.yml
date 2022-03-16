@@ -66,10 +66,13 @@ services:
     networks:
       - caas_net
 
-rabbitmq:
-    image: rabbitmq:3.8-management-alpine
-    container_name: rabbitmq
+#
+# rabbitmq
+#
+  rabbitmq:
     hostname: "rabbitmq"
+    container_name: rabbitmq
+    image: rabbitmq:3.8-management-alpine
     networks:
       - caas_net
     labels:
