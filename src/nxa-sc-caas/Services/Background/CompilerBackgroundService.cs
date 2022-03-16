@@ -17,7 +17,7 @@ namespace NXA.SC.Caas.Services
         private static List<IScheduledTask> allTasks = new List<IScheduledTask>();
         public IServiceProvider serviceProvider;
 
-        public CompilerBackgroundService(IServiceProvider serviceProvider) : base(serviceProvider)
+        public CompilerBackgroundService(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
