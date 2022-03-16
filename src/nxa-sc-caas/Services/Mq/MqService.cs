@@ -22,7 +22,6 @@ namespace NXA.SC.Caas.Services.Mq
         public MqService(ILogger<MqService> logger)
         {
             this.logger = logger;
-            CreateConnection();
         }
 
         public void SendTask(IScheduledTask? task)
