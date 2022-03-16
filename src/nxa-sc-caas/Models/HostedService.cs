@@ -13,6 +13,10 @@ namespace NXA.SC.Caas.Models
         private CancellationTokenSource cts = default!;
         public IServiceProvider serviceProvider;
 
+        public HostedService(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+        }
         public Task StartAsync(CancellationToken cancellationToken)
         {
             var scope = serviceProvider.CreateScope();
