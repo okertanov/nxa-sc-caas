@@ -12,7 +12,7 @@ using NXA.SC.Caas.Services.Compiler.Impl;
 namespace NXA.SC.Caas.Controllers
 {
     [ApiController]
-    //[Authorize(AuthenticationSchemes = TokenAuthOptions.DefaultScemeName)]
+    [Authorize(AuthenticationSchemes = TokenAuthOptions.DefaultScemeName)]
     [Route("[controller]")]
     public class CompilerController : ControllerBase
     {
