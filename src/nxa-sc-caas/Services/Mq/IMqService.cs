@@ -4,7 +4,7 @@ namespace NXA.SC.Caas.Services.Mq
 {
 	public interface IMqService
 	{
-		void SendTask(IScheduledTask? task);
+		string SendTask(IScheduledTask? task);
 		void CreateConnection();
 	}
 }

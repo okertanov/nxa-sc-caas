@@ -51,7 +51,7 @@ namespace NXA.SC.Caas.Controllers
             return JsonConvert.SerializeObject(res);
         }
 
-        [HttpPost("bcrypt")]
+        [HttpGet("bcrypt")]
         public async Task<object> Bcrypt(string message)
         {
             var request = HttpContext.Request;

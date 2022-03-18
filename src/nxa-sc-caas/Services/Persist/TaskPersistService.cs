@@ -15,17 +15,14 @@ namespace NXA.SC.Caas.Services.Persist.Impl
 	{
         private readonly ILogger<TaskPersistService> logger;
 		private readonly IMediator mediator;
-		private readonly IMqService mqService;
 
 		public TaskPersistService(
 			ILogger<TaskPersistService> logger,
-			IMediator mediator,
-			IMqService mqService
+			IMediator mediator
 		)
 		{
 			this.logger = logger;
 			this.mediator = mediator;
-			this.mqService = mqService;
         }
 
         public Task<CompilerTask[]> GetAll(int? offset, int? limit)
@@ -48,7 +45,9 @@ namespace NXA.SC.Caas.Services.Persist.Impl
 		{
             logger.LogDebug($"Storing: {task.ContractValues}...");
             var result = new CompilerTask(Guid.NewGuid().ToString(), CompilerTaskStatus.SCHEDULED, task, null, null);
-			mqService.SendTask(result);
+			var mqCommand = new SendMqTaskCommand { Task = result };
+			mediator.Send(mqCommand);
+
 			if (asyncCompilation)
 			{
 				var command = new AddScheduledTaskCommand { Task = result };
@@ -64,7 +63,8 @@ namespace NXA.SC.Caas.Services.Persist.Impl
 			else
 				task = CompilerTaskExtensions.SetStatus(task, CompilerTaskStatus.FAILED);
 
-			mqService.SendTask(task);
+			var mqCommand = new SendMqTaskCommand { Task = task };
+			mediator.Send(mqCommand);
 			if (asyncCompilation)
 			{
 				var command = new UpdateScheduledTaskCommand { Task = task };
@@ -80,15 +80,15 @@ namespace NXA.SC.Caas.Services.Persist.Impl
 			var allTasks = mediator.Send(command);
 			var taskToDelete = allTasks.Result.SingleOrDefault(t => ((CompilerTask)(t)).Identifier == identifier) as CompilerTask;
 
-			mqService.SendTask(taskToDelete);
 			if (taskToDelete == null)
 			{
 				throw new InvalidOperationException("Trying to delete nonexistent task");
 			}
-
+			var mqCommand = new SendMqTaskCommand { Task = taskToDelete };
+			mediator.Send(mqCommand);
 			var removeCommand = new RemoveScheduledTaskCommand { Identifier = identifier };
 			mediator.Send(removeCommand);
-
+			taskToDelete = CompilerTaskExtensions.SetStatus(taskToDelete, CompilerTaskStatus.DELETED);
 			return Task.FromResult(taskToDelete!);
 		}
 	}
