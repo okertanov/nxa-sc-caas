@@ -17,7 +17,7 @@ namespace NXA.SC.Caas.Services.Mq
         public string? MqHost => Environment.GetEnvironmentVariable("RABBITMQ_HOST");
         public string? MqUser => Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER");
         public string? MqPass => Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS");
-        private string queueName => "CaasTasks";
+        private string? exchangeName  => Environment.GetEnvironmentVariable("RABBITMQ_EXCHANGE");
 
         private IConnection? connection;
         private IModel? channel;
@@ -28,21 +28,16 @@ namespace NXA.SC.Caas.Services.Mq
             CreateConnection();
         }
 
-        public string SendTask(IScheduledTask? task)
+        public string Publish(object serializable)
         {
-            var json = JsonConvert.SerializeObject(task);
+            var json = JsonConvert.SerializeObject(serializable);
             var body = Encoding.UTF8.GetBytes(json);
 
             if (ConnectionExists())
             {
-                channel?.QueueDeclare(queueName, false, false, false, null);
-                channel.BasicPublish("", queueName, null, body);
+                channel?.ExchangeDeclare(exchangeName, ExchangeType.Fanout, true, false, null);
+                channel.BasicPublish(exchangeName, String.Empty, null, body);
             }
-            else
-            {
-                logger.LogError("RabbitMq connection doesn't exist");
-            }
-
             return json;
         }
 
@@ -94,7 +89,7 @@ namespace NXA.SC.Caas.Services.Mq
 
         public Task<string> Handle(SendMqTaskCommand request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(mqService.SendTask(request.Task));
+            return Task.FromResult(mqService.Publish(request.Task));
         }
     }
 }

@@ -4,6 +4,6 @@ namespace NXA.SC.Caas.Services.Mq
 {
 	public interface IMqService
 	{
-		string SendTask(IScheduledTask? task);
+		string Publish(object serializable);
 	}
 }
