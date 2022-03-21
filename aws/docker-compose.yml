@@ -22,6 +22,10 @@ services:
       DB_PORT: ${DB_PORT}
       API_DB_USER: ${API_DB_USER}
       API_DB_PASS: ${API_DB_PASS}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_EXCHANGE: ${RABBITMQ_EXCHANGE}
 
   #
   # caas-database
@@ -61,8 +65,25 @@ services:
         PGADMIN_DEFAULT_PASSWORD: 0e4896a9-c3c1-46de-bb69-48032f00eccc
     ports:
       - 5050:80
+
+#
+# rabbitmq
+#
+  rabbitmq:
+    hostname: "rabbitmq"
+    container_name: rabbitmq
+    image: rabbitmq:3.8-management-alpine
     networks:
       - caas_net
+    labels:
+      NAME: "rabbitmq"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+    ports:
+      - 5672:5672
+      - 15672:15672
 
 networks:
   caas_net:

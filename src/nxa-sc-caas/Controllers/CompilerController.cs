@@ -62,7 +62,7 @@ namespace NXA.SC.Caas.Controllers
             var dtoStr = JsonSerializer.Serialize(dto);
             logger.LogTrace($"{request.Method} {request.Path} - {dtoStr}");
 
-            var storeCommand = new StoreTasksCommand { Task = dto, AsyncCompilation = asyncCompilation};
+            var storeCommand = new StoreTasksCommand { Task = dto, AsyncCompilation = asyncCompilation };
             var stored = await mediator.Send(storeCommand);
 
             if (!asyncCompilation)

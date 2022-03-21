@@ -8,7 +8,8 @@ namespace NXA.SC.Caas.Models
         CREATED,
         SCHEDULED,
         PROCESSED,
-        FAILED
+        FAILED,
+        DELETED
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

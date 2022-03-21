@@ -22,12 +22,6 @@ namespace NXA.SC.Caas.Services
             this.serviceProvider = serviceProvider;
         }
 
-        public static IScheduledTask AddTask(IScheduledTask task)
-        {
-            allTasks.Add(task);
-            return task;
-        }
-
         public struct GetScheduledTasksCommand : IRequest<List<IScheduledTask>>
         {
         }
@@ -140,6 +134,12 @@ namespace NXA.SC.Caas.Services
         {
             allTasks.RemoveAll(t => t.Identifier == identifier);
             return identifier;
+        }
+
+        public static IScheduledTask AddTask(IScheduledTask task)
+        {
+            allTasks.Add(task);
+            return task;
         }
     }
 }

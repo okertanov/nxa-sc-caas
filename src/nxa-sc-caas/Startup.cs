@@ -25,6 +25,7 @@ using MediatR;
 using System.Reflection;
 using NXA.SC.Caas.Services;
 using NXA.SC.Caas.Shared.Utils;
+using NXA.SC.Caas.Services.Mq;
 
 namespace NXA.SC.Caas
 {
@@ -49,6 +50,7 @@ namespace NXA.SC.Caas
             services.AddScoped<IDbSettings, DbSettings>();
             services.AddScoped<ITemplatePreprocessService, TemplatePreprocessService>();
             services.AddScoped<INodeInteropService, NodeInteropService>();
+            services.AddSingleton<IMqService, MqService>();
             services.AddDbContext<ApiTokenContext>();
             services.AddAuthentication(TokenAuthOptions.DefaultScemeName)
                     .AddScheme<TokenAuthOptions, ApiTokenHandler>(TokenAuthOptions.DefaultScemeName, null);
