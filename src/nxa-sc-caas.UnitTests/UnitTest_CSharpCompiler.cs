@@ -97,5 +97,14 @@ namespace nxa_sc_caas.UnitTests
             var newTask = task.SetCreate(create);
             Assert.AreEqual(newTask.Create.ContractValues["testParamInt"], 1);
         }
+        [TestMethod]
+        public void Test_ContractClassNameError()
+        {
+            var compilerService = CompilerFactory.CreateCompilerServiceCSharp();
+            var task = CompilerFactory.GetSmartContractTaskWithClassNameAsInput();
+            var result = compilerService.Compile(task);
+            Assert.IsNotNull(result.Result.Error);
+            Assert.AreEqual(result.Result.Error.Code, "CS1514");
+        }
     }
 }

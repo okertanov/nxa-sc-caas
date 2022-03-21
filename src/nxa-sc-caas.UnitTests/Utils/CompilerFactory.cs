@@ -66,6 +66,37 @@ namespace nxa_sc_caas.UnitTests
             var task = new CompilerTask("123", CompilerTaskStatus.SCHEDULED, compilerTaskCreate, null, null);
             return task;
         }
+        public static CompilerTask GetSmartContractTaskWithClassNameAsInput()
+        {
+            var taskContractVals = new Dictionary<string, object>
+            {
+                { ContractValueEnum.ContractName.ToString(), "name123" },
+                { "class_name", "MOZ Coin" }
+            };
+            var compilerTaskCreate = new CreateCompilerTask
+            {
+                ContractSource = @"
+                using Neo;
+                using Neo.SmartContract;
+                using Neo.SmartContract.Framework;
+                using Neo.SmartContract.Framework.Native;
+                using Neo.SmartContract.Framework.Services;
+                namespace ProjectName
+                {
+                    public class {{class_name}} : SmartContract
+                    {
+                        private static int privateMethod()
+                        {
+                            return 1;
+                        }
+                    }
+                }",
+                CompilerTaskType = CompilerTaskTypeEnum.CSHARP,
+                ContractValues = taskContractVals
+            };
+            var task = new CompilerTask("123", CompilerTaskStatus.SCHEDULED, compilerTaskCreate, null, null);
+            return task;
+        }
         public static CompilerTask GetInvalidSmartContractTask()
         {
             var taskContractVals = new Dictionary<string, object>
