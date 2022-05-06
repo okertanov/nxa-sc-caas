@@ -17,7 +17,7 @@ namespace NXA.SC.Caas.Services.Mq
         public string? MqHost => Environment.GetEnvironmentVariable("RABBITMQ_HOST");
         public string? MqUser => Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER");
         public string? MqPass => Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS");
-        private string? exchangeName  => Environment.GetEnvironmentVariable("RABBITMQ_EXCHANGE");
+        private string? exchangeName  => Environment.GetEnvironmentVariable("MQ_EXCHANGE_CAAS");
 
         private IConnection? connection;
         private IModel? channel;

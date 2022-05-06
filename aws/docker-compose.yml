@@ -18,14 +18,15 @@ services:
     ports:
       - 5500:5500
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      API_DB_HOST: ${API_DB_HOST}
+      API_DB_PORT: ${API_DB_PORT}
+      API_DB_DATABASE: ${API_DB_DATABASE}
       API_DB_USER: ${API_DB_USER}
-      API_DB_PASS: ${API_DB_PASS}
+      API_DB_PASSWORD: ${API_DB_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-      RABBITMQ_HOST: ${RABBITMQ_HOST}
-      RABBITMQ_EXCHANGE: ${RABBITMQ_EXCHANGE}
+      MQ_EXCHANGE_CAAS: ${MQ_EXCHANGE_CAAS}
 
   #
   # caas-database
@@ -36,10 +37,10 @@ services:
     image: postgres:12
     environment:
       API_DB_USER: ${API_DB_USER}
-      API_DB_PASS: ${API_DB_PASS}
+      API_DB_PASSWORD: ${API_DB_PASSWORD}
       API_DB_DATABASE: ${API_DB_DATABASE}
       APP_DB_TOKENS: ${APP_DB_TOKENS}
-      POSTGRES_PASSWORD: ${API_DB_PASS}
+      POSTGRES_PASSWORD: ${API_DB_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
     secrets:
       - apitokens
@@ -47,7 +48,7 @@ services:
       - ./db:/docker-entrypoint-initdb.d/
       - caas-database-data:/var/lib/postgresql/data
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - API_DB_PORT: ${API_DB_PORT}
     networks:
       - caas_net
 
