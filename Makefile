@@ -7,6 +7,10 @@ PROJECT_NAME=nxa-sc-caas
 DOCKER_COMPOSE_FILE=docker-compose.yml
 DOCKER_COMPOSE_DEV_FILE=docker-compose.dev.yml
 
+##
+## Generic targets
+##
+
 all:
 	make -C src/nxa-sc-caas $@
 
@@ -16,15 +20,21 @@ build:
 test:
 	make -C src/nxa-sc-caas.UnitTests $@
 
-clean:
-	make -C src/nxa-sc-caas $@
-	make -C src/nxa-sc-caas.UnitTests $@
-
 start-dev:
 	make -C src/nxa-sc-caas $@
 
 start:
 	make -C src/nxa-sc-caas $@
+
+clean:
+	make -C src/nxa-sc-caas $@
+	make -C src/nxa-sc-caas.UnitTests $@
+
+distclean: clean docker-clean
+
+##
+## Docker targets
+##
 
 docker-build:
 	docker-compose -f ${DOCKER_COMPOSE_FILE} -f ${DOCKER_COMPOSE_DEV_FILE} build --parallel
@@ -43,8 +53,6 @@ docker-stop:
 
 docker-clean:
 	docker-compose -f ${DOCKER_COMPOSE_FILE} rm -s -f -v
-
-distclean: clean docker-clean
 
 ##
 ## Publish targets
