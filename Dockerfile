@@ -1,23 +1,24 @@
-#
-# Builder
-#
+##
+## Builder
+##
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS builder
 
-ENV GITLAB_TOKEN=gitlab-ci-token:tS99VysVoTf7ejc3sX_r
+ENV GIT_ROOT=https://github.com/okertanov
 
-ENV NXA_GIT_VERSION=DVITA-phase3
+ENV NXA_GIT_VERSION=polaris-wip
 
-ENV NEO_VM_REPO=https://${GITLAB_TOKEN}@gitlab.team11.lv/nxa/mirrors/neo-vm.git
+ENV NEO_VM_REPO=${GIT_ROOT}/neo-vm.git
 ENV NEO_VM_DIR=neo-vm
 
-ENV NEO_CORE_REPO=https://${GITLAB_TOKEN}@gitlab.team11.lv/nxa/mirrors/neo.git
+ENV NEO_CORE_REPO=${GIT_ROOT}/neo.git
 ENV NEO_CORE_DIR=neo
 
-ENV NEO_DEVPACK_REPO=https://${GITLAB_TOKEN}@gitlab.team11.lv/nxa/mirrors/neo-devpack-dotnet.git
+ENV NEO_DEVPACK_REPO=${GIT_ROOT}/neo-devpack-dotnet.git
 ENV NEO_DEVPACK_DIR=neo-devpack-dotnet
 
-ENV NXA_SC_CAAS_REPO=https://${GITLAB_TOKEN}@gitlab.team11.lv/nxa/neo-frontier-launchpad-2021/nxa-sc-caas.git
-ENV NXA_SC_CAAS_DIR=nxa-sc-caas-dir
+ENV NXA_SC_CAAS_REPO=${GIT_ROOT}/nxa-sc-caas.git
+ENV NXA_SC_CAAS_DIR=nxa-sc-caas
+
 # Node dpkg source repo
 RUN curl --silent --location https://deb.nodesource.com/setup_16.x | bash -
 
@@ -52,17 +53,20 @@ RUN make
 
 # Build CaaS
 WORKDIR /${NXA_SC_CAAS_DIR}
-RUN git checkout master
+RUN git checkout ${NXA_GIT_VERSION}
 RUN make
 
-#
-# Run
-#
+##
+## Runner
+##
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS run
 
-ENV NXA_SC_CAAS_DIR=nxa-sc-caas-dir
+ENV NXA_SC_CAAS_DIR=nxa-sc-caas
 
+# Node dpkg source repo
 RUN curl --silent --location https://deb.nodesource.com/setup_16.x | bash -
+
+# System deb packages
 RUN apt update && apt install -y \
     build-essential \
     procps\
@@ -70,6 +74,7 @@ RUN apt update && apt install -y \
 
 WORKDIR /app-root/caas
 
+# Copy artefacts from the builder
 COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas/dist ./
 COPY --from=builder /${NXA_SC_CAAS_DIR}/node_modules ./node_modules
 COPY --from=builder /${NXA_SC_CAAS_DIR}/src/nxa-sc-caas.UnitTests/TestTokens ../nxa-sc-caas.UnitTests/TestTokens
