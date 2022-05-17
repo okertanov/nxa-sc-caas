@@ -68,7 +68,6 @@ RUN curl --silent --location https://deb.nodesource.com/setup_16.x | bash -
 
 # System deb packages
 RUN apt update && apt install -y \
-    build-essential \
     procps\
     nodejs
 

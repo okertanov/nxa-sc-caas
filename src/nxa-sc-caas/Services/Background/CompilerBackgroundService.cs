@@ -121,8 +121,6 @@ namespace NXA.SC.Caas.Services
                 }
 
                 await Task.WhenAll(tasksRun);
-
-                // TODO: Introduce delay to not stress by 'FindAll'
             }
         }
 
