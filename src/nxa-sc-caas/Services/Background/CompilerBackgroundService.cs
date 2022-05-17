@@ -92,8 +92,11 @@ namespace NXA.SC.Caas.Services
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                if (allTasks.Count == 0)
+                if (allTasks.Count <= 0) {
+                    // Delay to to not stress by 'FindAll'
+                    Thread.Sleep(TimeSpan.FromMilliseconds(5000));
                     continue;
+                }
 
                 var tasksThatShouldRun = allTasks.FindAll(t => t.Status == CompilerTaskStatus.SCHEDULED);
 
